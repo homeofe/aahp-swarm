@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AAHP Swarm Hub</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div>
+          <h1>AAHP Swarm Hub</h1>
+          <p>Workspace + project-wide orchestrator controls (neutral, LLM-agnostic).</p>
+        </div>
+        <div class="topbar-actions">
+          <button id="loadConfigBtn" type="button">Reload config</button>
+          <button id="refreshBtn" type="button">Refresh state</button>
+        </div>
+      </header>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Workspace settings</h2>
+          <form id="globalForm" class="settings">
+            <label>
+              Workspace root
+              <input name="workspaceRoot" type="text" placeholder="C:\\Users\\root\\workspace" />
+            </label>
+            <label>
+              Active project
+              <select name="projectPath" id="projectPath"></select>
+            </label>
+            <label>
+              Global refresh interval (sec)
+              <input name="refreshSeconds" type="number" min="5" max="300" />
+            </label>
+            <label>
+              Handoff dir
+              <input name="handoffDir" type="text" />
+            </label>
+            <label>
+              Swarm dir
+              <input name="swarmDir" type="text" />
+            </label>
+            <label>
+              Active workflow
+              <select name="workflowId"></select>
+            </label>
+            <label class="inline">
+              <input name="showRawMarkdown" type="checkbox" />
+              Show raw debug JSON
+            </label>
+            <div class="actions">
+              <button id="saveConfigBtn" type="button">Save project + global settings</button>
+            </div>
+          </form>
+        </article>
+
+        <article class="card">
+          <h2>Provider settings</h2>
+          <section class="provider-block">
+            <h3>openclaw CLI Bridge</h3>
+            <label>
+              Enabled
+              <input name="cliBridgeEnabled" id="cliBridgeEnabled" type="checkbox" />
+            </label>
+            <label>
+              Base URL
+              <input name="cliBridgeBaseUrl" id="cliBridgeBaseUrl" type="text" />
+            </label>
+            <label>
+              Default model
+              <input name="cliBridgeDefaultModel" id="cliBridgeDefaultModel" type="text" />
+            </label>
+            <label>
+              API mode
+              <select id="cliBridgeApiMode">
+                <option value="none">none</option>
+                <option value="env">env var</option>
+                <option value="inline">inline for local profile</option>
+              </select>
+            </label>
+            <label>
+              API env var
+              <input id="cliBridgeApiEnv" type="text" />
+            </label>
+            <label>
+              API key (stored only in local hub config)
+              <input id="cliBridgeApiKey" type="password" placeholder="set once" autocomplete="new-password" />
+            </label>
+            <div class="actions actions-small">
+              <button id="cliHealthBtn" type="button">Check /health</button>
+              <button id="cliModelsBtn" type="button">Load /v1/models</button>
+              <button id="cliTestBtn" type="button">Run quick test</button>
+            </div>
+          </section>
+
+          <section class="provider-block">
+            <h3>akido-mcp (optional)</h3>
+            <label>
+              Enabled
+              <input name="akidoEnabled" id="akidoEnabled" type="checkbox" />
+            </label>
+            <label>
+              Base URL
+              <input name="akidoBaseUrl" id="akidoBaseUrl" type="text" />
+            </label>
+            <label>
+              API mode
+              <select id="akidoApiMode">
+                <option value="none">none</option>
+                <option value="env">env var</option>
+                <option value="inline">inline for local profile</option>
+              </select>
+            </label>
+            <label>
+              API env var
+              <input id="akidoApiEnv" type="text" />
+            </label>
+            <label>
+              API key (stored only in local hub config)
+              <input id="akidoApiKey" type="password" placeholder="set once" autocomplete="new-password" />
+            </label>
+            <div class="actions actions-small">
+              <button id="akidoStatusBtn" type="button">Check /status</button>
+              <button id="akidoActionsBtn" type="button">List /api/actions</button>
+            </div>
+          </section>
+
+          <pre id="providerRaw" class="raw"></pre>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Workflow + steps</h2>
+          <div class="actions">
+            <button id="addStepBtn" type="button">Add step</button>
+            <button id="runWorkflowBtn" type="button">Run active workflow</button>
+            <button id="runSingleStepBtn" type="button">Run selected step</button>
+          </div>
+
+          <label>
+            Run step
+            <select id="stepSelect"></select>
+          </label>
+
+          <div class="steps-wrap">
+            <table class="steps-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Provider</th>
+                  <th>Command / Prompt</th>
+                  <th>Model</th>
+                  <th>Action</th>
+                  <th>Params</th>
+                  <th>Timeout</th>
+                  <th>On-failure</th>
+                  <th>Enabled</th>
+                  <th>Remove</th>
+                </tr>
+              </thead>
+              <tbody id="stepsBody"></tbody>
+            </table>
+          </div>
+
+          <pre id="runResult" class="raw"></pre>
+        </article>
+
+        <article class="card">
+          <h2>Run overview</h2>
+          <div id="runStatus"></div>
+          <pre id="runSummary"></pre>
+        </article>
+      </section>
+
+      <section class="grid">
+        <article class="card half">
+          <h2>AAHP handoff</h2>
+          <ul id="handoffList" class="mono"></ul>
+        </article>
+        <article class="card half">
+          <h2>Latest findings</h2>
+          <ul id="findings"></ul>
+        </article>
+      </section>
+
+      <pre id="rawState" class="raw"></pre>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

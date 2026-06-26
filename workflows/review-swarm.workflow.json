@@ -1,0 +1,7 @@
+{
+  "name": "review-swarm",
+  "version": "0.2",
+  "description": "Runtime review workflow definition",
+  "mode": "review",
+  "roles": ["scout", "reviewer", "tester", "risk", "verdict", "handoff-manager"]
+}

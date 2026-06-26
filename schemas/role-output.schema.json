@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AAHP Role Output",
+  "type": "object",
+  "required": ["role", "repo"],
+  "properties": {
+    "role": {"type": "string"},
+    "repo": {"type": "string"},
+    "task_id": {"type": "string"},
+    "title": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 140,
+      "description": "Explicit title for role output"
+    },
+    "incident_title": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 180
+    }
+  },
+  "additionalProperties": true
+}

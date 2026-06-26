@@ -1,0 +1,94 @@
+# AAHP-SWARM - How to Use
+
+## Current state of this repository
+
+`aahp-swarm` is currently at:
+
+- Specification and protocol level for now.
+- Runtime files are present as TypeScript skeletons.
+- Output contracts and role templates are present.
+- Full execution engine is not yet wired to run end-to-end.
+
+So today it is usable for:
+
+- aligning on role contracts
+- creating neutral documentation
+- sharing naming and run conventions
+- planning an AAHP-aware run pipeline
+
+It is **not yet** a turnkey CI or UI product without the runtime bootstrap.
+
+## How workflows are used today
+
+1. Start from `docs/AAHP-SWARM-v0.2.md` and pick a mode.
+2. Read role instructions in `roles/` (neutral) or `.claude/agents/` (Claude wrapper).
+3. Use `swarm-commands/review.md` as neutral run contract, or `.claude/commands/swarm-review.md` for Claude.
+4. Execute roles with your orchestrator and write outputs to `.ai/swarm/` in schema format. This directory is created automatically on first use.
+5. Keep session files in `.ai/handoff/` current.
+
+## Are all AAHP tools integrated?
+
+No. The following are currently only present as docs/structure:
+
+- `aahp` handoff file layout (`STATUS`, `NEXT_ACTIONS`, `MANIFEST`, `TRUST`, `LOG`)
+- Naming and output conventions
+
+Not yet integrated in runtime:
+
+- `verify-handoff` gate
+- manifest regeneration hooks
+- archive/verify policy automation
+- any automatic handoff-write back channel
+
+To integrate those, we should add a thin runtime wrapper around existing AAHP scripts
+(`verify-handoff.sh`, `aahp-manifest.sh`, `aahp-archive.sh`) and expose them via
+`runtime` + settings-controlled CLI actions.
+
+## UI direction (AAHP-hub style)
+
+A hub UI can be added without changing the core protocol:
+
+- Read from `.ai/handoff/*` + `.ai/swarm/*`.
+- Render status, findings, next actions, incident list, and trust matrix.
+- Offer settings so users configure:
+  - repo root
+  - default mode (`review`, `dev`, `incident`)
+  - output directory for run artifacts
+  - refresh interval and auto-archive behavior
+- Provide safe write actions:
+  - update dashboard status
+  - append follow-up tasks
+  - trigger `aahp` checks
+
+This keeps Markdown as source-of-truth while reducing manual editing.
+
+## Suggested minimum 3-step rollout
+
+1. `Runtime orchestration`
+   - implement neutral dispatcher + role execution + schema validation.
+2. `AAHP tools binding`
+   - command adapters for verify/handoff/archive.
+3. `Hub dashboard`
+   - local web UI for status + actions.
+
+At any point we can start with step 1 or jump directly to step 3 as a prototype.
+
+## Hub prototype
+
+A first UI prototype is available in `hub/`:
+
+- `hub/server.js` – local API + static file server
+- `hub/public/` – dashboard UI
+
+To start:
+
+```bash
+cd C:\Users\root\workspace\aahp-swarm
+node hub/server.js
+```
+
+Open `http://127.0.0.1:4173`.
+
+The hub reads `.ai/handoff/*` and `.ai/swarm/*`, then renders a status panel. `.ai/swarm/*` is runtime output only and should not be committed unless explicitly shared.
+It does not yet execute role runs, but it gives the settings + monitoring layer so
+Markdown editing can be reduced over time.

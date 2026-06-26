@@ -1,0 +1,9 @@
+# AAHP-SWARM patterns to ignore in handoff checks
+
+# never include secrets
+TOKEN=*
+SECRET=*
+PASSWORD=*
+
+# no raw emails unless approved in allowlist
+*@*

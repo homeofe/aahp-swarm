@@ -1,0 +1,8 @@
+{
+  "repoRoot": "C:/Users/root/workspace/aahp-swarm",
+  "mode": "review",
+  "refreshSeconds": 15,
+  "handoffDir": ".ai/handoff",
+  "swarmDir": ".ai/swarm",
+  "showRawMarkdown": false
+}

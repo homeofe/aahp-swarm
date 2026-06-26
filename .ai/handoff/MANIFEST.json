@@ -1,0 +1,81 @@
+{
+  "aahp_version": "3.0",
+  "project": "aahp-swarm",
+  "last_session": {
+    "agent": "aahp-swarm-bootstrap",
+    "session_id": "swarm-bootstrap-001",
+    "timestamp": "2026-06-26T14:16:00Z",
+    "commit": "",
+    "phase": "implementation",
+    "duration_minutes": 5
+  },
+  "files": {
+    "STATUS.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-06-26T14:16:00Z",
+      "lines": 20,
+      "summary": "Initial swarm bootstrap status"
+    },
+    "NEXT_ACTIONS.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-06-26T14:16:00Z",
+      "lines": 22,
+      "summary": "Initial tasks for controller and validation CI"
+    },
+    "LOG.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-06-26T14:16:00Z",
+      "lines": 15,
+      "summary": "Bootstrap entry created"
+    },
+    "DASHBOARD.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-06-26T14:16:00Z",
+      "lines": 5,
+      "summary": "Health dashboard table for review and runtime"
+    },
+    "TRUST.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-06-26T14:16:00Z",
+      "lines": 6,
+      "summary": "Trust register with initial verified claims"
+    },
+    "CONVENTIONS.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-06-26T14:16:00Z",
+      "lines": 6,
+      "summary": "Conventions for ascii, handoff, and schema validity"
+    },
+    "WORKFLOW.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-06-26T14:16:00Z",
+      "lines": 5,
+      "summary": "Review and dev workflow definitions"
+    },
+    ".aiignore": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-06-26T14:16:00Z",
+      "lines": 7,
+      "summary": "Handoff safety ignore patterns"
+    }
+  },
+  "quick_context": "Initial scaffold created for AAHP Swarm v0.2. Next step: implement runtime dispatcher and schema validation.",
+  "token_budget": {
+    "manifest_only": 100,
+    "manifest_plus_core": 250,
+    "full_read": 800
+  },
+  "next_task_id": 3,
+  "tasks": {
+    "T-001": {
+      "title": "Implement Swarm Controller runtime",
+      "status": "ready",
+      "priority": "high"
+    },
+    "T-002": {
+      "title": "Add schemas and validation CI",
+      "status": "ready",
+      "priority": "high"
+    }
+  }
+}

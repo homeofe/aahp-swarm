@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AAHP Swarm Finding",
+  "type": "object",
+  "required": ["id", "severity", "type", "title", "summary"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^F-[0-9]{3,}$"
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["info", "low", "medium", "high", "critical"]
+    },
+    "type": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 140,
+      "description": "Explicit, grep-friendly title for reporting and incidents"
+    },
+    "incident_id": {
+      "type": "string",
+      "pattern": "^INC-[0-9]{8}-[0-9]{3,}$"
+    },
+    "incident_title": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 140
+    },
+    "summary": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "recommendation": {
+      "type": "string"
+    },
+    "recommended_task": {
+      "type": "string"
+    },
+    "blocking": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": true
+}

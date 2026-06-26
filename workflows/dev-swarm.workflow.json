@@ -1,0 +1,15 @@
+{
+  "name": "dev-swarm",
+  "version": "0.2",
+  "mode": "dev",
+  "roles": [
+    "scout",
+    "architect",
+    "implementer",
+    "tester",
+    "reviewer",
+    "risk",
+    "verdict",
+    "handoff-manager"
+  ]
+}

@@ -1,0 +1,21 @@
+# environment
+.env
+.env.local
+
+# editor / system
+.DS_Store
+Thumbs.db
+
+# node/runtime artifacts
+node_modules/
+dist/
+coverage/
+
+# generated swarm output
+.ai/swarm/
+.local/
+/hub/.local/
+logs/
+
+# temp
+tmp/
