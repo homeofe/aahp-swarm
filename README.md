@@ -1,5 +1,7 @@
 # aahp-swarm
 
+[![AAHP Verify](https://github.com/homeofe/aahp-swarm/actions/workflows/aahp-verify.yml/badge.svg)](https://github.com/homeofe/aahp-swarm/actions/workflows/aahp-verify.yml)
+
 AAHP Swarm is a role based system for review and verification workflows that
 extends the AAHP protocol with dedicated agent roles.
 

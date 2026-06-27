@@ -2,80 +2,81 @@
   "aahp_version": "3.0",
   "project": "aahp-swarm",
   "last_session": {
-    "agent": "aahp-swarm-bootstrap",
-    "session_id": "swarm-bootstrap-001",
-    "timestamp": "2026-06-26T14:16:00Z",
-    "commit": "",
+    "agent": "claude-opus-4-8",
+    "session_id": "cli-1782541282",
+    "timestamp": "2026-06-27T06:21:24Z",
+    "commit": "4d5901f",
     "phase": "implementation",
-    "duration_minutes": 5
+    "duration_minutes": 0
   },
   "files": {
     "STATUS.md": {
-      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-06-26T14:16:00Z",
-      "lines": 20,
-      "summary": "Initial swarm bootstrap status"
+      "checksum": "sha256:0a65e8ac26285a7a0a53eb6614eb6fab99cc807bd12fd5cc3596d0ce5e125d43",
+      "updated": "2026-06-27T06:20:40Z",
+      "lines": 44,
+      "summary": "**Rule:** This file is rewritten at the end of every active session."
     },
     "NEXT_ACTIONS.md": {
-      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-06-26T14:16:00Z",
-      "lines": 22,
-      "summary": "Initial tasks for controller and validation CI"
+      "checksum": "sha256:a04c8a8912d66f3ee2814d0c873052fa7aaecb6a00f47edfccb440cd1ae290e8",
+      "updated": "2026-06-27T06:16:29Z",
+      "lines": 20,
+      "summary": "(no summary available)"
     },
     "LOG.md": {
-      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-06-26T14:16:00Z",
-      "lines": 15,
-      "summary": "Bootstrap entry created"
+      "checksum": "sha256:28474b784c6e387cb3b6c87eb5a230b6c052992ec5cb1270d9f3d091e187de55",
+      "updated": "2026-06-27T06:16:29Z",
+      "lines": 16,
+      "summary": "(no summary available)"
+    },
+    "LOG-ARCHIVE.md": {
+      "checksum": "sha256:01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "updated": "2026-06-27T06:16:29Z",
+      "lines": 1,
+      "summary": "(no summary available)"
+    },
+    "LOG-ARCHIVE.index.json": {
+      "checksum": "sha256:9bc0f5427594815f5968a4d15826972e195b926c482fc24cc13c8387985e5d5f",
+      "updated": "2026-06-27T06:16:29Z",
+      "lines": 4,
+      "summary": "{"
     },
     "DASHBOARD.md": {
-      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-06-26T14:16:00Z",
+      "checksum": "sha256:a04cf11d15490bb8ddc58022548203d8848bebbfc31682bd762e53855752d2fa",
+      "updated": "2026-06-27T06:16:29Z",
       "lines": 5,
-      "summary": "Health dashboard table for review and runtime"
+      "summary": "| Section | Open | Status |"
     },
     "TRUST.md": {
-      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-06-26T14:16:00Z",
+      "checksum": "sha256:ed629c20c7498da0562e19c6d498a4dcc7524b5f30e09800d858cbcdbf1ec822",
+      "updated": "2026-06-27T06:16:29Z",
       "lines": 6,
-      "summary": "Trust register with initial verified claims"
+      "summary": "| Claim | Status | Verified | TTL | Expires |"
     },
     "CONVENTIONS.md": {
-      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-06-26T14:16:00Z",
-      "lines": 6,
-      "summary": "Conventions for ascii, handoff, and schema validity"
+      "checksum": "sha256:1acc9f4b342433f6069fc773f6cb1bd052d8a29fc3e9d86fbece018e167ae186",
+      "updated": "2026-06-27T06:16:29Z",
+      "lines": 13,
+      "summary": "- Use English and ASCII in code and docs."
     },
     "WORKFLOW.md": {
-      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-06-26T14:16:00Z",
+      "checksum": "sha256:2fe28df8db70e37e4e1dc001d1b79c1305c481ed0e0143acfce0392faee1f346",
+      "updated": "2026-06-27T06:16:29Z",
       "lines": 5,
-      "summary": "Review and dev workflow definitions"
+      "summary": "- Review mode: scout -> reviewer -> tester -> risk -> verdict -> handoff-manager."
     },
-    ".aiignore": {
-      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-06-26T14:16:00Z",
-      "lines": 7,
-      "summary": "Handoff safety ignore patterns"
+    "pii-allowlist.json": {
+      "checksum": "sha256:7c1051f6e2bc3943b7c1dbe4da229694455681b8875a346c99279e555edb733f",
+      "updated": "2026-06-27T06:16:31Z",
+      "lines": 4,
+      "summary": "{"
     }
   },
-  "quick_context": "Initial scaffold created for AAHP Swarm v0.2. Next step: implement runtime dispatcher and schema validation.",
+  "quick_context": "**Rule:** This file is rewritten at the end of every active session. (no summary available) ",
   "token_budget": {
-    "manifest_only": 100,
-    "manifest_plus_core": 250,
-    "full_read": 800
-  },
-  "next_task_id": 3,
-  "tasks": {
-    "T-001": {
-      "title": "Implement Swarm Controller runtime",
-      "status": "ready",
-      "priority": "high"
-    },
-    "T-002": {
-      "title": "Add schemas and validation CI",
-      "status": "ready",
-      "priority": "high"
-    }
+    "manifest_only": 85,
+    "manifest_plus_core": 454,
+    "full_read": 847
   }
+  ,"next_task_id": 3
+  ,"tasks": {"T-001":{"title":"Implement Swarm Controller runtime","status":"ready","priority":"high"},"T-002":{"title":"Add schemas and validation CI","status":"ready","priority":"high"}}
 }
