@@ -6,6 +6,7 @@ import { homedir, tmpdir } from "node:os";
 import { validateVerdict } from "./lib/verdict.mjs";
 import { diffFindings } from "./lib/dedupe.mjs";
 import { assemblePrompt } from "./lib/prompt.mjs";
+import { extractVerdict } from "./lib/extract.mjs";
 import { loadState, saveState } from "./lib/state.mjs";
 import { formatCadenceMarker, formatRollingTitle, formatRollingBody, formatDeltaComment } from "./lib/report.mjs";
 
@@ -75,12 +76,11 @@ const raw = process.platform === "win32"
   ? execFileSync("cmd.exe", ["/d", "/s", "/c", "claude", ...agentFlags], agentOpts)
   : execFileSync("claude", agentFlags, agentOpts);
 
-const match = raw.match(/\{[\s\S]*\}/);
-if (!match) {
-  console.error("no JSON object found in agent output");
+const parsed = extractVerdict(raw);
+if (!parsed) {
+  console.error("no verdict JSON found in agent output. First 800 chars:\n" + raw.slice(0, 800));
   process.exit(2);
 }
-const parsed = JSON.parse(match[0]);
 const verdict = validateVerdict(parsed);
 if (!verdict.ok) {
   console.error("verdict failed validation: " + verdict.errors.join("; "));

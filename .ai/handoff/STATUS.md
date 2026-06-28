@@ -2,6 +2,12 @@
 
 > Last updated: 2026-06-28 by claude-opus-4-8
 >
+> Note (2026-06-28): hardened verdict extraction (lib/extract.mjs). The first
+> chef-linux run failed because the agent wrapped its JSON in prose with stray
+> braces and the old greedy regex grabbed the wrong span. Now a string-aware
+> balanced-brace scan picks the last verdict-shaped object; a failed parse dumps
+> the first 800 chars for diagnosis. Prompt output contract tightened. 29 tests.
+>
 > Note (2026-06-28): runner gained persistent state + a single rolling tracking
 > issue per target (lib/state.mjs; report.mjs formatRollingTitle/Body and
 > formatDeltaComment), so unattended weekly runs update one issue and only comment
