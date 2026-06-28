@@ -2,6 +2,13 @@
 
 > Last updated: 2026-06-28 by claude-sonnet-4-6
 >
+> Note (2026-06-28): added orchestration CLI runner/swarm-review.mjs and the
+> prompt assembler runner/lib/prompt.mjs. The CLI clones a target repo, assembles
+> the swarm prompt from roles/ and the target's .ai/swarm/profile.md, invokes the
+> claude agent (or prints [dry-run] lines and exits 0 in --dry-run mode), validates
+> the typed verdict, deduplicates findings, and writes the cadence marker back to
+> the target repo. Tests grow from 14 to 15 (all pass).
+>
 > Note (2026-06-28): runner: hardened findingKey against separator collisions,
 > short-circuited the ambiguity check on invalid states, aligned issue-body count.
 > findingKey now uses JSON.stringify so a pipe character in file/rule fields cannot
