@@ -2,6 +2,13 @@
 
 > Last updated: 2026-06-28 by claude-opus-4-8
 >
+> Note (2026-06-28): runner gained persistent state + a single rolling tracking
+> issue per target (lib/state.mjs; report.mjs formatRollingTitle/Body and
+> formatDeltaComment), so unattended weekly runs update one issue and only comment
+> when findings change instead of re-filing. New --state-file flag (default
+> ~/.swarm/<target>-state.json). The deferred public TRUST marker write was removed
+> for now. 23 runner tests pass. Prepares the chef-linux weekly cron (Task 5).
+>
 > Note (2026-06-28): runner tuning validated by a real run against
 > supply-chain-guard (issue filed to elvatis/ideabase#23, verdict ESCALATE_REVIEW
 > with 5 grounded findings). The agent now runs with cwd set to the checkout and

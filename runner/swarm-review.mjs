@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync, mkdtempSync, readdirSync, existsSync, appendFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
 import { validateVerdict } from "./lib/verdict.mjs";
 import { diffFindings } from "./lib/dedupe.mjs";
 import { assemblePrompt } from "./lib/prompt.mjs";
-import { formatCadenceMarker, formatIssueTitle, formatIssueBody } from "./lib/report.mjs";
+import { loadState, saveState } from "./lib/state.mjs";
+import { formatCadenceMarker, formatRollingTitle, formatRollingBody, formatDeltaComment } from "./lib/report.mjs";
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -35,7 +36,10 @@ const targetRepo = arg("target-repo", "https://github.com/homeofe/supply-chain-g
 const sinkRepo = arg("sink-repo", "elvatis/ideabase");
 const rolesDir = arg("roles-dir", join(process.cwd(), "..", "roles"));
 const profilePath = arg("profile-path", ".ai/swarm/profile.md");
-const markerPath = arg("marker-path", ".ai/handoff/TRUST.md");
+const stateFile = arg(
+  "state-file",
+  join(homedir(), ".swarm", targetRepo.replace("https://github.com/", "").replace(/[^A-Za-z0-9._-]/g, "_") + "-state.json"),
+);
 const dryRun = Boolean(arg("dry-run", false));
 
 const work = mkdtempSync(join(tmpdir(), "swarm-"));
@@ -84,9 +88,8 @@ if (!verdict.ok) {
 }
 
 const findings = Array.isArray(parsed.findings) ? parsed.findings : [];
-const prevKeysPath = join(work, "prev-keys.json");
-const prevKeys = existsSync(prevKeysPath) ? JSON.parse(readFileSync(prevKeysPath, "utf8")) : [];
-const diff = diffFindings(prevKeys, findings);
+const state = loadState(stateFile);
+const diff = diffFindings(state.prevKeys, findings);
 
 const severityCounts = { critical: 0, high: 0, medium: 0, low: 0 };
 for (const f of findings) {
@@ -105,22 +108,39 @@ const run = {
   fresh: diff.fresh,
 };
 
-// Private sink: open a tracking issue with full detail.
-execFileSync("gh", [
-  "issue", "create",
-  "--repo", sinkRepo,
-  "--title", formatIssueTitle(run),
-  "--body", formatIssueBody(run),
-  "--label", "swarm-review",
-], { stdio: ["pipe", "inherit", "inherit"] });
-
-// Public marker: append the sanitized one-liner to the target's trust record in
-// the checkout, then push it back on main (the runner environment must have push
-// rights to the target). Skipped here if the marker file is absent.
-const markerFile = join(checkout, markerPath);
-if (existsSync(markerFile)) {
-  appendFileSync(markerFile, "\n> " + formatCadenceMarker(run) + "\n");
-  // Pushing the marker back is gated; the cron environment performs the gated
-  // commit. See Task 5 for the commit-with-companion command.
+// Private sink: one rolling tracking issue per target. The body always reflects
+// the latest run; a comment is posted only when findings changed since the last
+// run, so unchanged findings are not re-filed week after week.
+function gh(ghArgs) {
+  return execFileSync("gh", ghArgs, { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
 }
+
+const body = formatRollingBody(run, findings);
+let issueNumber = state.issueNumber;
+let updatedExisting = false;
+if (issueNumber != null) {
+  try {
+    gh(["issue", "edit", String(issueNumber), "--repo", sinkRepo, "--body", body]);
+    updatedExisting = true;
+  } catch {
+    // The tracking issue is gone (deleted); fall back to creating a new one.
+    issueNumber = null;
+  }
+}
+if (issueNumber == null) {
+  const out = gh(["issue", "create", "--repo", sinkRepo, "--title", formatRollingTitle(run), "--body", body, "--label", "swarm-review"]);
+  const m = out.match(/\/issues\/(\d+)/);
+  issueNumber = m ? Number(m[1]) : null;
+  console.log("created rolling issue: " + out.trim());
+}
+if (updatedExisting) {
+  if (diff.fresh.length > 0 || diff.resolvedKeys.length > 0) {
+    gh(["issue", "comment", String(issueNumber), "--repo", sinkRepo, "--body", formatDeltaComment(run, diff.fresh, diff.resolvedKeys.length)]);
+    console.log(`issue #${issueNumber}: ${diff.fresh.length} new, ${diff.resolvedKeys.length} resolved (comment posted)`);
+  } else {
+    console.log(`issue #${issueNumber}: no change since last run (body refreshed)`);
+  }
+}
+
+saveState(stateFile, { issueNumber, prevKeys: diff.currentKeys });
 console.log("swarm review complete: " + formatCadenceMarker(run));
