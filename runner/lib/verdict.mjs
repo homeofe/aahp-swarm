@@ -25,7 +25,7 @@ export function validateVerdict(v) {
   if (v.decision_state !== "ALLOW" && v.safe_to_commit === true) {
     errors.push("safe_to_commit must be false when decision_state is not ALLOW");
   }
-  if (v.decision_state && !["ALLOW", "DENY_POLICY"].includes(v.decision_state)) {
+  if (DECISION_STATES.includes(v.decision_state) && !["ALLOW", "DENY_POLICY"].includes(v.decision_state)) {
     if (typeof v.ambiguity !== "object" || v.ambiguity === null) {
       errors.push("ambiguity object is required when decision_state is a HOLD, ESCALATE, or FAIL state");
     }

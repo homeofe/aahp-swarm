@@ -19,7 +19,7 @@ export function formatIssueBody(run) {
   lines.push(`Verdict: ${run.decision_state} (result=${run.result}, safe_to_commit=${run.safe_to_commit})`);
   lines.push(`Reason: ${run.reason ?? "(none)"}`);
   lines.push("");
-  lines.push(`## New findings (${run.fresh.length})`);
+  lines.push(`## New findings (${run.freshCount ?? run.fresh.length})`);
   for (const f of run.fresh) {
     lines.push(`- [${f.severity ?? "?"}] ${f.title ?? f.rule ?? "finding"} - ${f.file ?? "?"}:${f.line ?? "?"}`);
     if (f.detail) lines.push(`  ${f.detail}`);

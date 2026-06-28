@@ -29,3 +29,11 @@ test("requires an ambiguity object on a non-ALLOW non-DENY state", () => {
 test("rejects a non-object", () => {
   assert.equal(validateVerdict(null).ok, false);
 });
+
+test("an invalid decision_state does not also demand ambiguity", () => {
+  const v = { role: "verdict", result: "hold", decision_state: "UNKNOWN", blocking: true, safe_to_commit: false };
+  const r = validateVerdict(v);
+  assert.equal(r.ok, false);
+  assert.ok(r.errors.some((e) => e.includes("decision_state")));
+  assert.ok(!r.errors.some((e) => e.includes("ambiguity")));
+});

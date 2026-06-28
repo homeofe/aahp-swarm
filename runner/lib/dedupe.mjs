@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 
 export function findingKey(f) {
-  const basis = [f.file ?? "", f.rule ?? f.title ?? "", String(f.line ?? "")].join("|");
+  const basis = JSON.stringify([f.file ?? "", f.rule ?? f.title ?? "", f.line ?? ""]);
   return createHash("sha256").update(basis).digest("hex").slice(0, 16);
 }
 

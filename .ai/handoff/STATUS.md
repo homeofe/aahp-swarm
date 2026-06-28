@@ -2,6 +2,13 @@
 
 > Last updated: 2026-06-28 by claude-sonnet-4-6
 >
+> Note (2026-06-28): runner: hardened findingKey against separator collisions,
+> short-circuited the ambiguity check on invalid states, aligned issue-body count.
+> findingKey now uses JSON.stringify so a pipe character in file/rule fields cannot
+> collide two distinct findings; the ambiguity guard only fires for a recognized
+> DECISION_STATES member; formatIssueBody uses freshCount with a fresh.length
+> fallback. Tests grow from 11 to 14 (all pass).
+>
 > Note (2026-06-28): added runner/ -- the reference swarm review runner with
 > pure, unit-tested logic: verdict validation (runner/lib/verdict.mjs), finding
 > dedupe (runner/lib/dedupe.mjs), and report formatters (runner/lib/report.mjs).
