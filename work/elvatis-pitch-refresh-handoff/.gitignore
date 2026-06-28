@@ -1,0 +1,5 @@
+# Regenerated QA render artifacts (produced by export-pdf.mjs / render-check.mjs).
+# These are throwaway verification PNGs - do not commit.
+qa-fixed/
+qa-de/
+pdf-check/

@@ -1,0 +1,300 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AAHP Swarm - Elvatis HTML Deck</title>
+<style>
+@font-face{font-family:Fraunces;src:url("assets/fraunces-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:Fraunces;src:url("assets/fraunces-500.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:Fraunces;src:url("assets/fraunces-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:Fraunces;src:url("assets/fraunces-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+@font-face{font-family:Inter;src:url("assets/inter-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:Inter;src:url("assets/inter-500.woff2") format("woff2");font-weight:500;font-style:normal;font-display:swap}
+@font-face{font-family:Inter;src:url("assets/inter-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap}
+@font-face{font-family:Inter;src:url("assets/inter-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:swap}
+
+:root{
+  --bg0:#050B16;
+  --bg1:#07111F;
+  --bg2:#0A1729;
+  --primary:#22B4FF;
+  --violet:#7B61FF;
+  --mint:#00FF9C;
+  --copper:#FF8A3D;
+  --amber:#F5B83D;
+  --ink:#F5FAFF;
+  --body:#C7D4E8;
+  --muted:#8FA0BD;
+  --line:rgba(143,213,236,.18);
+  --line-strong:rgba(143,213,236,.32);
+  --card:rgba(255,255,255,.038);
+  --card-hi:rgba(255,255,255,.062);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg0);color:var(--body);font-family:Inter,system-ui,sans-serif}
+body{padding:24px}
+.deck{display:grid;gap:24px;justify-content:center}
+
+.slide{
+  width:1280px;
+  height:720px;
+  position:relative;
+  overflow:hidden;
+  display:grid;
+  grid-template-rows:42px minmax(0,1fr);
+  gap:24px;
+  padding:42px 72px 62px;
+  page-break-after:always;
+  border:1px solid rgba(143,213,236,.12);
+  background:linear-gradient(165deg,var(--bg1),var(--bg0) 62%,var(--bg2));
+}
+.slide:before{
+  content:"";
+  position:absolute;
+  right:-170px;
+  top:-190px;
+  width:560px;
+  height:560px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(34,180,255,.16),rgba(34,180,255,0) 70%);
+}
+.slide:after{
+  content:"";
+  position:absolute;
+  left:-190px;
+  bottom:-210px;
+  width:450px;
+  height:390px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(123,97,255,.08),rgba(123,97,255,0) 70%);
+}
+.slide.mint:before{background:radial-gradient(circle,rgba(0,255,156,.14),rgba(0,255,156,0) 70%)}
+.slide.violet:before{background:radial-gradient(circle,rgba(123,97,255,.16),rgba(123,97,255,0) 70%)}
+.slide.copper:after{background:radial-gradient(circle,rgba(255,138,61,.10),rgba(255,138,61,0) 70%)}
+
+.topbar,.body,.foot{position:relative;z-index:1}
+.body{min-height:0}
+.topbar{display:flex;align-items:center}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:30px;height:30px;object-fit:contain}
+.brand-main{font-family:Fraunces,serif;font-size:19px;font-weight:700;color:var(--ink);line-height:1}
+.brand-sub{font-size:10px;font-weight:700;color:var(--primary);margin-top:3px}
+.foot{
+  position:absolute;
+  z-index:2;
+  left:72px;
+  right:72px;
+  bottom:22px;
+  height:28px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  border-top:1px solid rgba(143,213,236,.20);
+  padding-top:10px;
+  font-size:11px;
+  color:var(--muted);
+}
+.foot span:last-child{min-width:28px;color:var(--ink);font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+
+h1,h2,h3{font-family:Fraunces,Georgia,serif;color:var(--ink);margin:0;letter-spacing:0;line-height:1.08}
+h1{font-size:40px;font-weight:600}
+h2{font-size:27px;font-weight:600}
+h3{font-size:20px;font-weight:600}
+p{margin:0;line-height:1.42}
+.eyebrow{display:flex;align-items:center;gap:12px;color:var(--primary);font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.10em}
+.eyebrow:before{content:"";width:26px;height:2px;background:currentColor}
+.smallcap{font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:var(--muted)}
+.primary{color:var(--primary)}
+.violetText{color:var(--violet)}
+.mintText{color:var(--mint)}
+.copperText{color:var(--copper)}
+
+.card{background:linear-gradient(180deg,var(--card-hi),var(--card));border:1px solid var(--line);border-radius:10px}
+.rule{height:3px;border-radius:8px;background:var(--primary)}
+.bullet{padding:0;margin:0;list-style:none}
+.bullet li{position:relative;padding-left:13px;margin:0 0 6px;font-size:13px;line-height:1.36}
+.bullet li:before{content:"-";position:absolute;left:0;color:var(--primary)}
+
+.slide-title p{font-size:18px;margin-top:10px}
+
+.s1 .body{display:grid;grid-template-rows:minmax(0,1fr) 116px;gap:20px}
+.s1-main{display:grid;grid-template-columns:1.02fr .98fr;gap:38px;min-height:0}
+.titleblock{display:flex;flex-direction:column;gap:19px;min-height:0}
+.subtitle{font-size:20px;color:var(--body);max-width:500px}
+.message{padding:22px 26px;border-color:rgba(34,180,255,.30);background:rgba(34,180,255,.055)}
+.message h2{font-size:26px;max-width:475px}
+.message p{font-size:14px;color:var(--body);margin-top:8px}
+.review{display:grid;grid-template-rows:14px 132px 250px;gap:14px;min-height:0}
+.role-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.role{height:132px;padding:14px 12px;text-align:center;display:grid;grid-template-rows:38px 16px 42px;align-content:center;justify-items:center;row-gap:7px}
+.orb{width:38px;height:38px;border-radius:50%;border:1px solid currentColor;background:radial-gradient(circle,currentColor 0%,rgba(255,255,255,.04) 68%);opacity:.72}
+.role strong{font-size:11px;color:currentColor;line-height:1}
+.role span{font-size:11.2px;line-height:1.22;color:var(--body);display:flex;align-items:center;justify-content:center}
+.info-pair{display:grid;grid-template-rows:118px 118px;gap:14px}
+.wide-info{height:100%;padding:18px 25px;display:grid;grid-template-columns:120px 1fr;gap:14px;align-items:center}
+.wide-info p,.wide-info li{font-size:12.5px}
+.outcomes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.outcome{height:116px;padding:16px 18px}
+.outcome .rule{margin-bottom:12px}
+.outcome h3{font-size:18px;margin:7px 0 5px}
+.outcome p{font-size:11.5px;color:var(--body)}
+
+.s2 .body{display:grid;grid-template-rows:94px 126px 236px 46px;gap:14px}
+.s2 .slide-title p{font-size:16px;margin-top:8px}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.metric{height:126px;padding:14px 16px 12px;display:grid;grid-template-rows:3px 18px 36px 20px;align-content:start;row-gap:8px}
+.metric .smallcap{align-self:end}
+.metric .num{font-family:Fraunces,serif;font-size:31px;line-height:1;color:var(--ink);font-weight:700}
+.metric p{font-size:11px;line-height:1.22;color:var(--body)}
+.market-lower{display:grid;grid-template-columns:1fr 1.05fr;gap:22px;min-height:0}
+.chart-card,.drivers-card{height:236px;min-height:0;padding:18px 22px;overflow:hidden}
+.chart-card{display:grid;grid-template-rows:16px minmax(0,1fr) 16px 22px}
+.bars{display:grid;grid-template-columns:54px repeat(4,1fr);gap:14px;align-items:end;border-bottom:1px solid rgba(143,213,236,.22);padding-top:8px;min-height:0}
+.axis{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;font-size:10px;color:var(--muted);text-align:right}
+.barwrap{height:100%;display:flex;align-items:end;justify-content:center}
+.bar{width:48px;border-radius:4px 4px 0 0;background:var(--primary)}
+.year-row{display:grid;grid-template-columns:54px repeat(4,1fr);gap:14px;font-size:10.5px;color:var(--body);text-align:center;margin-top:4px}
+.sources{font-size:8.5px;line-height:1.25;color:var(--muted)}
+.drivers-card h2{font-size:22px;margin-bottom:10px}
+.drivers-card .bullet li{font-size:11.2px;line-height:1.25;margin-bottom:4px}
+.positioning{height:46px;border-color:rgba(255,138,61,.34);background:rgba(255,138,61,.08);display:grid;grid-template-columns:148px 1fr;align-items:center;padding:0 20px;font-size:12px}
+.positioning strong{color:var(--copper)}
+.positioning span{font-weight:700;color:var(--ink)}
+
+.s3 .body{display:grid;grid-template-rows:92px 290px 128px;gap:16px}
+.timeline{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;min-height:0}
+.stage{height:290px;padding:18px 18px 16px;display:flex;flex-direction:column}
+.stage .rule{margin-bottom:18px}
+.stage h2{font-size:24px;margin:10px 0 6px}
+.stage .date{font-size:11px;color:var(--muted);font-weight:800;margin:4px 0 17px}
+.stage li{font-size:11.7px}
+.bottom-two{display:grid;grid-template-columns:1fr 1fr;gap:38px}
+.bottom-two .card{height:128px;padding:14px 24px;overflow:hidden}
+.bottom-two h2{font-size:20px;margin-bottom:7px}
+.bottom-two li{font-size:11.2px;margin-bottom:3px}
+
+.s4 .body{display:grid;grid-template-rows:126px 290px 96px;gap:16px}
+.s4-head{display:grid;grid-template-columns:1fr 396px;gap:36px;align-items:start}
+.s4-head p{font-size:17px;margin-top:12px}
+.context{height:118px;padding:20px 24px;background:rgba(123,97,255,.15);border-color:rgba(123,97,255,.36)}
+.context p{font-size:13px;font-weight:800;color:var(--ink);margin-top:10px}
+.compare{display:grid;grid-template-columns:156px 1fr 1fr 1fr 1.42fr;grid-template-rows:34px repeat(4,58px);gap:6px}
+.cell{padding:10px;border:1px solid var(--line);border-radius:8px;background:rgba(255,255,255,.026);font-size:11.2px;line-height:1.24;color:var(--body);overflow:hidden}
+.cell.head{font-size:10px;text-transform:uppercase;font-weight:800;color:var(--muted);background:rgba(255,255,255,.052)}
+.cell.dim{font-size:10.5px;font-weight:800;color:var(--muted)}
+.cell.aahp{background:rgba(34,180,255,.09);border-color:rgba(34,180,255,.34);font-weight:800;color:var(--ink)}
+.s4-bottom{display:grid;grid-template-columns:1fr 1fr;gap:38px}
+.s4-bottom .card{height:96px;padding:16px 26px;overflow:hidden}
+.s4-bottom h2{font-size:22px;margin-bottom:6px}
+.s4-bottom p{font-size:11.5px}
+
+@page{size:1280px 720px;margin:0}
+@media print{
+  body{padding:0}
+  .deck{display:block}
+  .slide{border:0;margin:0;page-break-after:always;break-after:page}
+  /* The corner glows are radial-gradients that Chrome exports as type-1 PDF
+     shadings; many viewers render those as solid magenta blobs. Hide them in
+     the PDF (the slides keep their dark linear-gradient background). */
+  .slide:before,.slide:after{display:none}
+}
+@media(max-width:1320px){
+  body{padding:12px}
+  .slide{transform-origin:top center;max-width:100%;height:auto;aspect-ratio:16/9}
+}
+</style>
+</head>
+<body>
+<main class="deck">
+<section class="slide s1 copper">
+  <header class="topbar"><div class="brand"><img src="assets/elvatis-mark.png" alt="Elvatis"><div><div class="brand-main">ELVATIS GROUP</div><div class="brand-sub">Cybersecurity, AI & Governance</div></div></div></header>
+  <div class="body">
+    <div class="s1-main">
+      <div class="titleblock">
+        <div class="eyebrow">Executive message</div>
+        <h1>AAHP Swarm<br>From autonomous agents<br>to accountable decisions</h1>
+        <p class="subtitle">Review-first architecture for enterprise-grade AI orchestration.</p>
+        <div class="card message"><h2>Shift the conversation from AI that acts to AI whose decisions can be trusted.</h2><p>AAHP Swarm operationalizes verification, not autonomy.</p></div>
+      </div>
+      <div class="review">
+        <div class="smallcap">The review chain</div>
+        <div class="role-row">
+          <div class="card role primary"><div class="orb"></div><strong>SCOUT</strong><span>Finds work, gaps and blockers</span></div>
+          <div class="card role violetText"><div class="orb"></div><strong>TESTER</strong><span>Separates facts from assumptions</span></div>
+          <div class="card role mintText"><div class="orb"></div><strong>RISK</strong><span>Evaluates risks and policy issues</span></div>
+          <div class="card role copperText"><div class="orb"></div><strong>VERDICT</strong><span>Auditable decision: pass / warn / fail / block</span></div>
+        </div>
+        <div class="info-pair">
+          <div class="card wide-info"><h2>Problem</h2><ul class="bullet"><li>Self-validating agents create hidden risk</li><li>Unclear what was actually checked</li><li>Confidence based on narrative, not evidence</li><li>No audit trail for AI-driven decisions</li></ul></div>
+          <div class="card wide-info" style="border-color:rgba(0,255,156,.30);background:rgba(0,255,156,.045)"><h2>Insight</h2><p>The bottleneck is verification, not generation. Quality comes from role separation and explicit evidence - not bigger models.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="outcomes">
+      <div class="card outcome"><div class="rule" style="background:var(--mint)"></div><div class="smallcap mintText">Value</div><h3>Governance-ready decisions</h3><p>Auditable AI decisions, reduced uncertainty, structured evidence.</p></div>
+      <div class="card outcome"><div class="rule"></div><div class="smallcap primary">Differentiation</div><h3>Evidence over narrative</h3><p>Distributed roles, explicit checks, no implicit trust.</p></div>
+      <div class="card outcome"><div class="rule" style="background:var(--violet)"></div><div class="smallcap violetText">Strategic fit</div><h3>Agentic DevOps foundation</h3><p>EU AI Act readiness and scale across multi-agent stacks.</p></div>
+    </div>
+  </div>
+  <footer class="foot"><span>AAHP Swarm</span><span>01</span></footer>
+</section>
+<section class="slide s2">
+  <header class="topbar"><div class="brand"><img src="assets/elvatis-mark.png" alt="Elvatis"><div><div class="brand-main">ELVATIS GROUP</div><div class="brand-sub">Cybersecurity, AI & Governance</div></div></div></header>
+  <div class="body">
+    <div class="slide-title"><div class="eyebrow">Market analysis</div><h1>The verification gap in a $50B+ opportunity</h1><p>Agentic AI is exploding - but governance and review layers are the missing infrastructure.</p></div>
+    <div class="metrics">
+      <div class="card metric"><div class="rule"></div><div class="smallcap">AI agents market 2026</div><div class="num">$10.9B</div><p>Grand View Research, 2026</p></div>
+      <div class="card metric"><div class="rule" style="background:var(--violet)"></div><div class="smallcap">Forecast 2030</div><div class="num">$50.3B</div><p>CAGR 45.8% (2025-2030)</p></div>
+      <div class="card metric"><div class="rule" style="background:var(--mint)"></div><div class="smallcap">Agentic AI 2034</div><div class="num">$139B</div><p>Fortune Business Insights</p></div>
+      <div class="card metric"><div class="rule" style="background:var(--copper)"></div><div class="smallcap">AI governance 2031</div><div class="num">$1.5B</div><p>CAGR 28.2% / EU AI Act</p></div>
+    </div>
+    <div class="market-lower">
+      <div class="card chart-card"><div class="smallcap">AI agents market size 2025-2030 (USD billion)</div><div class="bars"><div class="axis"><span>60</span><span>40</span><span>20</span><span>0</span></div><div class="barwrap"><div class="bar" style="height:15%;opacity:.72"></div></div><div class="barwrap"><div class="bar" style="height:22%"></div></div><div class="barwrap"><div class="bar" style="height:50%;background:var(--violet)"></div></div><div class="barwrap"><div class="bar" style="height:91%;background:var(--copper)"></div></div></div><div class="year-row"><span></span><span>2025</span><span>2026</span><span>2028</span><span>2030</span></div><div class="sources">Sources preserved from source deck: Grand View Research, Fortune Business Insights, McKinsey, Gartner, EU AI Act.</div></div>
+      <div class="card drivers-card"><h2>Key market drivers</h2><ul class="bullet"><li>62% of enterprises experimenting with AI agents; 23% scaling (McKinsey, 2025)</li><li>171% average ROI on deployed agents; top 5% return $8 per $1</li><li>$6.42B funding into agentic AI startups in 2025 alone</li><li>40%+ of agentic AI projects at risk of cancellation by 2027 due to poor scoping and governance</li><li>EU AI Act enforcement from Feb 2025; fines up to EUR35M / 7% global turnover</li></ul></div>
+    </div>
+    <div class="card positioning"><strong>Elvatis positioning</strong><span>AAHP Swarm targets the verification and governance gap - turning failing pilots into auditable, deployable systems.</span></div>
+  </div>
+  <footer class="foot"><span>AAHP Swarm</span><span>02</span></footer>
+</section>
+<section class="slide s3 mint">
+  <header class="topbar"><div class="brand"><img src="assets/elvatis-mark.png" alt="Elvatis"><div><div class="brand-main">ELVATIS GROUP</div><div class="brand-sub">Cybersecurity, AI & Governance</div></div></div></header>
+  <div class="body">
+    <div class="slide-title"><div class="eyebrow mintText">Roadmap</div><h1>From specification to autonomous operations</h1><p>Review-first today. Governed automation tomorrow.</p></div>
+    <div class="timeline">
+      <div class="card stage"><div class="rule"></div><div class="smallcap primary">v0.1-v0.2</div><h2>Foundations</h2><div class="date">Q2 2026</div><ul class="bullet"><li>Role contracts</li><li>JSON schemas</li><li>Public repo + license</li></ul></div>
+      <div class="card stage"><div class="rule" style="background:var(--violet)"></div><div class="smallcap violetText">v0.3</div><h2>Review Runtime</h2><div class="date">Q3 2026</div><ul class="bullet"><li>Orchestration skeleton</li><li>Deterministic verdict engine</li><li>Audit-ready handoff</li></ul></div>
+      <div class="card stage"><div class="rule" style="background:var(--mint)"></div><div class="smallcap mintText">v0.4</div><h2>Integrations</h2><div class="date">Q4 2026</div><ul class="bullet"><li>Claude / OpenAI / Gemini</li><li>CI/CD + GitHub workflows</li><li>Elvatis MCP integration</li></ul></div>
+      <div class="card stage"><div class="rule" style="background:var(--copper)"></div><div class="smallcap copperText">v1.0</div><h2>Enterprise Ready</h2><div class="date">Q1 2027</div><ul class="bullet"><li>EU AI Act / ISO 42001 pack</li><li>SSO, RBAC, audit logs</li><li>Reference deployments</li></ul></div>
+      <div class="card stage"><div class="rule" style="background:var(--amber)"></div><div class="smallcap" style="color:var(--amber)">v2.0</div><h2>Governed Autonomy</h2><div class="date">H2 2027</div><ul class="bullet"><li>Multi-swarm orchestration</li><li>Self-improving review loops</li><li>Verticals: Telco, Health, Public</li></ul></div>
+    </div>
+    <div class="bottom-two"><div class="card"><h2>Milestones & proof points</h2><ul class="bullet"><li>Open-source community traction</li><li>First enterprise pilot target: Q4 2026</li><li>Compliance certification path target: Q2 2027</li><li>Reference customer in EU public sector target: H2 2027</li></ul></div><div class="card" style="border-color:rgba(0,255,156,.34);background:rgba(0,255,156,.045)"><h2>Strategic outcomes</h2><ul class="bullet"><li>Trusted layer for agentic AI in regulated industries</li><li>Foundation for Elvatis AI Governance suite</li><li>Bridge to Deutsche Telekom / T-Systems / EU partners</li><li>Defensible IP via contracts, schemas and verdict engine</li></ul></div></div>
+  </div>
+  <footer class="foot"><span>AAHP Swarm</span><span>03</span></footer>
+</section>
+<section class="slide s4 violet copper">
+  <header class="topbar"><div class="brand"><img src="assets/elvatis-mark.png" alt="Elvatis"><div><div class="brand-main">ELVATIS GROUP</div><div class="brand-sub">Cybersecurity, AI & Governance</div></div></div></header>
+  <div class="body">
+    <div class="s4-head"><div><div class="eyebrow violetText">Competitive analysis</div><h1>Where AAHP Swarm plays</h1><p>Orchestration frameworks deliver execution. AAHP Swarm delivers the review and governance layer they lack.</p></div><div class="card context"><div class="smallcap violetText">Market context</div><p>Only 11% of enterprises run agentic AI in production; orchestration is consolidating, but governance remains open.</p></div></div>
+    <div class="compare">
+      <div class="cell head">Dimension</div><div class="cell head">LangGraph</div><div class="cell head">CrewAI</div><div class="cell head">AutoGen / AG2</div><div class="cell head aahp">AAHP Swarm</div>
+      <div class="cell dim">Primary Focus</div><div class="cell">Stateful workflow<br>graphs</div><div class="cell">Role-based<br>agent crews</div><div class="cell">Conversational<br>multi-agent</div><div class="cell aahp">Review, verification<br>and accountable handoff</div>
+      <div class="cell dim">Architecture</div><div class="cell">Directed state<br>graphs</div><div class="cell">Declarative roles<br>+ tasks</div><div class="cell">Multi-turn<br>message loops</div><div class="cell aahp">Contract-driven swarm:<br>Scout / Tester / Risk / Verdict</div>
+      <div class="cell dim">Production Strength</div><div class="cell">5/5<br>deterministic,<br>audit-friendly</div><div class="cell">3/5<br>fast prototyping</div><div class="cell">4/5<br>MS / Azure ecosystem</div><div class="cell aahp">5/5<br>review-first,<br>audit-native</div>
+      <div class="cell dim">Governance Layer</div><div class="cell">Partial<br>state, traces</div><div class="cell">Limited</div><div class="cell">Limited</div><div class="cell aahp">Native - EU AI Act /<br>ISO 42001 ready</div>
+    </div>
+    <div class="s4-bottom"><div class="card"><h2>AAHP Swarm is a layer</h2><p>Sits above LangGraph, CrewAI and AutoGen; model-agnostic by design; adds review, verification and verdicts.</p></div><div class="card" style="border-color:rgba(255,138,61,.34);background:rgba(255,138,61,.07)"><h2>Strategic whitespace</h2><p>Missing governance, EU AI Act demand, AI Governance CAGR 28.2%, first-mover in role-based review-first architecture.</p></div></div>
+  </div>
+  <footer class="foot"><span>AAHP Swarm</span><span>04</span></footer>
+</section>
+</main>
+</body>
+</html>
+
+
+
+
+
+
+
