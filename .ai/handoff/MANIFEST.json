@@ -3,17 +3,17 @@
   "project": "aahp-swarm",
   "last_session": {
     "agent": "claude-opus-4-8",
-    "session_id": "cli-1782620333",
-    "timestamp": "2026-06-28T04:18:54Z",
-    "commit": "862843f",
+    "session_id": "cli-1782635719",
+    "timestamp": "2026-06-28T08:35:20Z",
+    "commit": "0c10750",
     "phase": "implementation",
     "duration_minutes": 0
   },
   "files": {
     "STATUS.md": {
-      "checksum": "sha256:e8ba766ff48e3c858c18a3ceb7cb1358b7c77d53442484b57b3d430ebb280977",
-      "updated": "2026-06-28T04:18:38Z",
-      "lines": 65,
+      "checksum": "sha256:313090a5f6aacb33be50c0040f41fb490c75c774d312a7486cf7289f880e877a",
+      "updated": "2026-06-28T08:34:51Z",
+      "lines": 89,
       "summary": "**Rule:** This file is rewritten at the end of every active session."
     },
     "NEXT_ACTIONS.md": {
@@ -71,11 +71,11 @@
       "summary": "{"
     }
   },
-  "quick_context": "Added the AAHP Swarm Elvatis pitch deck (EN + DE) under work/elvatis-pitch-refresh-handoff as a finished deliverable.",
+  "quick_context": "Added the Typed Verdict Layer (TVL): typed verdict decision_state + ambiguity object, verdict/risk role extensions, controller + telemetry roles, design spec.",
   "token_budget": {
     "manifest_only": 85,
-    "manifest_plus_core": 624,
-    "full_read": 1017
+    "manifest_plus_core": 839,
+    "full_read": 1232
   }
   ,"next_task_id": 3
   ,"tasks": {"T-001":{"title":"Implement Swarm Controller runtime","status":"ready","priority":"high"},"T-002":{"title":"Add schemas and validation CI","status":"ready","priority":"high"}}

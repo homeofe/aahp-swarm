@@ -2,15 +2,52 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "AAHP Swarm Verdict",
   "type": "object",
-  "required": ["role", "result", "blocking", "safe_to_commit"],
+  "required": ["role", "result", "decision_state", "blocking", "safe_to_commit"],
   "properties": {
     "role": {"type": "string", "const": "verdict"},
     "result": {
       "type": "string",
-      "enum": ["pass", "warning", "fail", "block"]
+      "enum": ["pass", "warning", "fail", "block", "hold"]
+    },
+    "decision_state": {
+      "type": "string",
+      "description": "Typed Verdict Layer state. Unknown never collapses to ALLOW or DENY_POLICY; it resolves to a HOLD, ESCALATE, or FAIL state. See docs/typed-verdict-layer.md.",
+      "enum": [
+        "ALLOW",
+        "DENY_POLICY",
+        "HOLD_AMBIGUOUS",
+        "HOLD_METADATA_REQUIRED",
+        "ESCALATE_REVIEW",
+        "FAIL_CONFIGURATION"
+      ]
     },
     "blocking": {"type": "boolean"},
     "reason": {"type": "string"},
+    "ambiguity": {
+      "type": "object",
+      "description": "Per-dimension state and ownership. Required whenever decision_state is not ALLOW or DENY_POLICY.",
+      "properties": {
+        "input_state": {
+          "type": "string",
+          "enum": ["INPUT_VALID", "INPUT_MISSING_METADATA", "INPUT_MALFORMED", "INPUT_LEGACY", "INPUT_UNREADABLE"]
+        },
+        "classification_state": {
+          "type": "string",
+          "enum": ["CLASSIFIED_SAFE", "CLASSIFIED_RISKY", "CLASSIFICATION_UNKNOWN", "CLASSIFICATION_INFERRED", "CLASSIFICATION_CONFLICTING"]
+        },
+        "policy_state": {
+          "type": "string",
+          "enum": ["POLICY_ACTIVE", "POLICY_UNREADABLE", "POLICY_MISSING", "POLICY_CONFLICT", "POLICY_EXPIRED"]
+        },
+        "execution_state": {
+          "type": "string",
+          "enum": ["EXECUTION_NOT_STARTED", "EXECUTION_AUTHORIZED", "EXECUTION_SUCCEEDED", "EXECUTION_FAILED_DELIVERY", "EXECUTION_PARTIAL", "EXECUTION_NO_DURABLE_RESULT"]
+        },
+        "owner": {"type": "string"},
+        "required_action": {"type": "string"},
+        "expires_at": {"type": "string"}
+      }
+    },
     "required_actions": {
       "type": "array",
       "items": {"type": "string"}
@@ -21,5 +58,15 @@
     },
     "safe_to_commit": {"type": "boolean"}
   },
+  "allOf": [
+    {
+      "if": {
+        "not": {"properties": {"decision_state": {"const": "ALLOW"}}}
+      },
+      "then": {
+        "properties": {"safe_to_commit": {"const": false}}
+      }
+    }
+  ],
   "additionalProperties": true
 }

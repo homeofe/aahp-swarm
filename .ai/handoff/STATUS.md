@@ -10,7 +10,30 @@ The AAHP gate is live (scripts plus the AAHP Verify workflow and a real,
 generated MANIFEST.json). The repository also now carries the AAHP Swarm
 pitch deck (EN + DE) under work/elvatis-pitch-refresh-handoff/ as a finished
 deliverable: HTML sources, locally bundled fonts, an image-based PDF exporter,
-and the two final PDFs.
+and the two final PDFs. The Verdict and Risk roles now carry the Typed Verdict
+Layer (docs/typed-verdict-layer.md): ambiguity is a first-class HOLD state, never
+a silent pass or block.
+
+## [2026-06-28] Typed Verdict Layer (TVL)
+
+**Agent:** claude-opus-4-8
+**Phase:** implementation
+
+### What was done
+
+- Added docs/typed-verdict-layer.md: a code-review-framed design spec for typed
+  ambiguity governance (derived from a production policy-bypass finding). Core
+  rule: an unknown classification never collapses to pass or block; it resolves to
+  a typed HOLD, ESCALATE, or FAIL state with an owner and an expiry.
+- Extended schemas/verdict.schema.json with decision_state (ALLOW, DENY_POLICY,
+  HOLD_AMBIGUOUS, HOLD_METADATA_REQUIRED, ESCALATE_REVIEW, FAIL_CONFIGURATION), an
+  ambiguity object (five state dimensions plus owner), result `hold`, and the
+  invariant that safe_to_commit is true only when decision_state == ALLOW.
+- Updated roles/verdict.md and roles/risk.md for the typed states and ambiguity
+  detection; added roles/controller.md (loop prevention, repetition compression)
+  and roles/telemetry.md (execution-state verification, authorization is not
+  success).
+- Updated docs/SWARM-ROLE-MODEL.md for the hold verdict and the two new roles.
 
 ## [2026-06-28] Pitch deck (EN + DE) added
 
@@ -60,6 +83,7 @@ and the two final PDFs.
 | Roles | .claude/agents | Drafts present |
 | Commands | .claude/commands | Drafts present |
 | Workflows | .claude/workflows | Drafts present |
-| Schemas | schemas | Drafts present |
+| Schemas | schemas | verdict.schema typed (TVL) |
+| Typed Verdict Layer | docs/typed-verdict-layer.md, roles/ | Design v0.1 |
 | Runtime | runtime/* | Skeleton present |
 | Pitch deck | work/elvatis-pitch-refresh-handoff | EN + DE final |

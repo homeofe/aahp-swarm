@@ -2,7 +2,8 @@
 
 ## Mission
 
-Identify safety, policy, secret, and handoff-integrity risks.
+Identify safety, policy, secret, and handoff-integrity risks, and detect ambiguity
+that could become a bypass.
 
 ## Outputs
 
@@ -33,3 +34,8 @@ Output findings item should include title and issue title style:
 - Classify each finding with severity.
 - Recommend concrete required actions.
 - Use issue titles in `[AAHP-SWARM] [<priority>] <scope>: <clear action>` format.
+- Flag any change whose risk class cannot be determined as `CLASSIFICATION_UNKNOWN`,
+  so the Verdict holds it (HOLD_AMBIGUOUS) instead of letting an unknown pass
+  silently.
+- Treat missing classification, an unreadable policy, or a tooling failure as a
+  risk to resolve, never as implicit approval. See docs/typed-verdict-layer.md.
