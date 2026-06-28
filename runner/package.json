@@ -1,0 +1,10 @@
+{
+  "name": "aahp-swarm-runner",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Reference runner that executes an aahp-swarm review against a target repo.",
+  "scripts": {
+    "test": "node --test"
+  }
+}

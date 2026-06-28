@@ -1,6 +1,12 @@
 # AAHP-SWARM: Current State of the Nation
 
-> Last updated: 2026-06-28 by claude-opus-4-8
+> Last updated: 2026-06-28 by claude-sonnet-4-6
+>
+> Note (2026-06-28): added runner/ -- the reference swarm review runner with
+> pure, unit-tested logic: verdict validation (runner/lib/verdict.mjs), finding
+> dedupe (runner/lib/dedupe.mjs), and report formatters (runner/lib/report.mjs).
+> Tests live in runner/test/ (11 tests, all pass). No external npm dependencies;
+> uses only node:crypto and node:test.
 >
 > Note (2026-06-28): synced pre-existing handoff edits (NEXT_ACTIONS issue links
 > for T-001..T-007) and added `.ai/logs/` to .gitignore. Workspace prep ahead of
