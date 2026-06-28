@@ -2,18 +2,18 @@
   "aahp_version": "3.0",
   "project": "aahp-swarm",
   "last_session": {
-    "agent": "claude-sonnet-4-6",
-    "session_id": "cli-1782646404",
-    "timestamp": "2026-06-28T11:33:25Z",
-    "commit": "6c26a77",
-    "phase": "implementation",
+    "agent": "claude-opus-4-8",
+    "session_id": "cli-1782646908",
+    "timestamp": "2026-06-28T11:41:49Z",
+    "commit": "c9a3f09",
+    "phase": "fix",
     "duration_minutes": 0
   },
   "files": {
     "STATUS.md": {
-      "checksum": "sha256:e8d0ca9bba9ebd3dc4a302e5cd9606140f3ba64561bebdde45d3c5d222772fd5",
-      "updated": "2026-06-28T11:33:18Z",
-      "lines": 113,
+      "checksum": "sha256:77b22ec21484bb613fe67bdcbc6a959b137e77cf641fe2e423429ca51c746373",
+      "updated": "2026-06-28T11:41:42Z",
+      "lines": 115,
       "summary": "(no summary available)"
     },
     "NEXT_ACTIONS.md": {
@@ -74,8 +74,8 @@
   "quick_context": "(no summary available) (no summary available) ",
   "token_budget": {
     "manifest_only": 85,
-    "manifest_plus_core": 1123,
-    "full_read": 1516
+    "manifest_plus_core": 1172,
+    "full_read": 1565
   }
   ,"next_task_id": 3
   ,"tasks": {"T-001":{"title":"Implement Swarm Controller runtime","status":"ready","priority":"high","github_issue":2,"github_repo":"homeofe/aahp-swarm"},"T-002":{"title":"Add schemas and validation CI","status":"ready","priority":"high","github_issue":3,"github_repo":"homeofe/aahp-swarm"}}

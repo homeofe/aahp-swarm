@@ -2,6 +2,8 @@
 
 > Last updated: 2026-06-28 by claude-sonnet-4-6
 >
+> Note (2026-06-28): runner: replaced swarm-review.mjs with the prescribed execFileSync (shell-free) orchestration and aligned assemblePrompt to {roles, profile, repoTree}. The prior inferred version used execSync with shell-interpolated target argument (command injection). All 15 tests pass; dry-run verified.
+>
 > Note (2026-06-28): added orchestration CLI runner/swarm-review.mjs and the
 > prompt assembler runner/lib/prompt.mjs. The CLI clones a target repo, assembles
 > the swarm prompt from roles/ and the target's .ai/swarm/profile.md, invokes the

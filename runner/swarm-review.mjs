@@ -1,214 +1,122 @@
 #!/usr/bin/env node
-/**
- * swarm-review.mjs -- Orchestration CLI for aahp-swarm reviews.
- *
- * Usage:
- *   node runner/swarm-review.mjs <owner/repo> [--dry-run]
- *
- * In dry-run mode the tool clones the target repo, assembles the prompt, and
- * prints the byte count without invoking the agent. Useful for smoke-testing
- * the prompt assembly pipeline without a live claude CLI.
- *
- * In live mode the tool:
- *   1. Clones the target repo to a temp directory.
- *   2. Assembles the swarm prompt (roles + profile).
- *   3. Calls the server-side claude CLI with the prompt piped to stdin.
- *   4. Validates the verdict JSON returned by the agent.
- *   5. Diffs findings against the previous run (deduplication).
- *   6. Writes the swarm report back to the target repo's .ai/swarm/ directory.
- *
- * Dependencies: node built-ins only (node:child_process, node:fs, node:os,
- * node:path, node:crypto). No npm packages.
- */
-
-import { execSync, spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, rmSync } from "node:fs";
-import { join, dirname, resolve } from "node:path";
+import { execFileSync } from "node:child_process";
+import { readFileSync, writeFileSync, mkdtempSync, readdirSync, existsSync, appendFileSync } from "node:fs";
+import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { fileURLToPath } from "node:url";
-
-import { assemblePrompt } from "./lib/prompt.mjs";
 import { validateVerdict } from "./lib/verdict.mjs";
 import { diffFindings } from "./lib/dedupe.mjs";
+import { assemblePrompt } from "./lib/prompt.mjs";
 import { formatCadenceMarker, formatIssueTitle, formatIssueBody } from "./lib/report.mjs";
 
-// ---------------------------------------------------------------------------
-// Paths
-// ---------------------------------------------------------------------------
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-// The roles/ directory lives two levels up from runner/
-const REPO_ROOT = resolve(__dirname, "..");
-const ROLES_DIR = join(REPO_ROOT, "roles");
-
-// ---------------------------------------------------------------------------
-// Argument parsing
-// ---------------------------------------------------------------------------
-
-const args = process.argv.slice(2);
-const dryRun = args.includes("--dry-run");
-const positional = args.filter((a) => !a.startsWith("--"));
-
-if (positional.length === 0) {
-  console.error("Usage: node runner/swarm-review.mjs <owner/repo> [--dry-run]");
-  process.exit(1);
+function arg(name, fallback) {
+  const i = process.argv.indexOf(`--${name}`);
+  if (i !== -1 && i + 1 < process.argv.length && !process.argv[i + 1].startsWith("--")) {
+    return process.argv[i + 1];
+  }
+  if (process.argv.includes(`--${name}`)) return true;
+  return fallback;
 }
 
-const target = positional[0]; // e.g. "homeofe/supply-chain-guard"
-if (!target.includes("/")) {
-  console.error(`Error: target must be in owner/repo format, got: ${target}`);
-  process.exit(1);
+function git(args, opts = {}) {
+  return execFileSync("git", args, { encoding: "utf8", stdio: ["pipe", "pipe", "pipe"], ...opts });
 }
 
-// ---------------------------------------------------------------------------
-// Clone
-// ---------------------------------------------------------------------------
-
-const workDir = mkdtempSync(join(tmpdir(), "swarm-review-"));
-const cloneDir = join(workDir, "repo");
-
-console.log(`[swarm-review] cloning https://github.com/${target} ...`);
-try {
-  execSync(`git clone --depth 1 https://github.com/${target} ${cloneDir}`, {
-    stdio: ["ignore", "ignore", "pipe"],
-  });
-} catch (err) {
-  console.error(`[swarm-review] clone failed: ${err.stderr?.toString().trim() ?? err.message}`);
-  rmSync(workDir, { recursive: true, force: true });
-  process.exit(1);
+function readRoles(rolesDir) {
+  return ["scout", "tester", "risk", "verdict"]
+    .map((r) => `### ${r}\n` + readFileSync(join(rolesDir, `${r}.md`), "utf8"))
+    .join("\n\n");
 }
 
-// ---------------------------------------------------------------------------
-// Assemble prompt
-// ---------------------------------------------------------------------------
+function today() {
+  return new Date().toISOString().slice(0, 10);
+}
 
-const { prompt, bytes } = assemblePrompt({ rolesDir: ROLES_DIR, targetDir: cloneDir });
+const targetRepo = arg("target-repo", "https://github.com/homeofe/supply-chain-guard");
+const sinkRepo = arg("sink-repo", "elvatis/ideabase");
+const rolesDir = arg("roles-dir", join(process.cwd(), "..", "roles"));
+const profilePath = arg("profile-path", ".ai/swarm/profile.md");
+const markerPath = arg("marker-path", ".ai/handoff/TRUST.md");
+const dryRun = Boolean(arg("dry-run", false));
+
+const work = mkdtempSync(join(tmpdir(), "swarm-"));
+const checkout = join(work, "repo");
+git(["clone", "--depth", "1", targetRepo, checkout]);
+const sha = git(["-C", checkout, "rev-parse", "--short", "HEAD"]).trim();
+
+const profile = existsSync(join(checkout, profilePath))
+  ? readFileSync(join(checkout, profilePath), "utf8")
+  : "(no profile found in target; review against the role contracts only)";
+const repoTree = readdirSync(join(checkout, "src"), { recursive: true })
+  .filter((p) => typeof p === "string" && p.endsWith(".ts"))
+  .map((p) => `src/${p}`)
+  .join("\n");
+
+const prompt = assemblePrompt({ roles: readRoles(rolesDir), profile, repoTree });
 
 if (dryRun) {
-  console.log(`[dry-run] prompt assembled: ${bytes} bytes`);
-  console.log(`[dry-run] would invoke agent against ${target} -- skipping`);
-  rmSync(workDir, { recursive: true, force: true });
+  console.log(`[dry-run] target=${targetRepo}@${sha} sink=${sinkRepo}`);
+  console.log(`[dry-run] prompt bytes=${prompt.length}`);
   process.exit(0);
 }
 
-// ---------------------------------------------------------------------------
-// Run agent
-// ---------------------------------------------------------------------------
-
-console.log(`[swarm-review] running agent against ${target} (${bytes} bytes prompt) ...`);
-
-const agentResult = spawnSync("claude", ["--output-format", "json", "--print", "--verbose"], {
-  input: prompt,
+// The server-authenticated claude CLI runs the prompt in headless print mode and
+// returns the model text on stdout. No API key is passed here; auth is the
+// chef-linux environment's existing claude session.
+const raw = execFileSync("claude", ["-p", prompt, "--output-format", "text"], {
   encoding: "utf8",
-  maxBuffer: 8 * 1024 * 1024,
+  maxBuffer: 32 * 1024 * 1024,
 });
 
-if (agentResult.error) {
-  console.error(`[swarm-review] agent invocation failed: ${agentResult.error.message}`);
-  rmSync(workDir, { recursive: true, force: true });
-  process.exit(1);
+const match = raw.match(/\{[\s\S]*\}/);
+if (!match) {
+  console.error("no JSON object found in agent output");
+  process.exit(2);
+}
+const parsed = JSON.parse(match[0]);
+const verdict = validateVerdict(parsed);
+if (!verdict.ok) {
+  console.error("verdict failed validation: " + verdict.errors.join("; "));
+  process.exit(3);
 }
 
-if (agentResult.status !== 0) {
-  console.error(`[swarm-review] agent exited with status ${agentResult.status}`);
-  console.error(agentResult.stderr);
-  rmSync(workDir, { recursive: true, force: true });
-  process.exit(1);
-}
+const findings = Array.isArray(parsed.findings) ? parsed.findings : [];
+const prevKeysPath = join(work, "prev-keys.json");
+const prevKeys = existsSync(prevKeysPath) ? JSON.parse(readFileSync(prevKeysPath, "utf8")) : [];
+const diff = diffFindings(prevKeys, findings);
 
-// ---------------------------------------------------------------------------
-// Parse + validate verdict
-// ---------------------------------------------------------------------------
-
-let verdict;
-try {
-  // The agent returns JSON; find the last top-level JSON object in the output.
-  const output = agentResult.stdout.trim();
-  const jsonMatch = output.match(/\{[\s\S]*\}(?=[^}]*$)/);
-  if (!jsonMatch) throw new Error("no JSON object found in agent output");
-  verdict = JSON.parse(jsonMatch[0]);
-} catch (err) {
-  console.error(`[swarm-review] failed to parse agent output as JSON: ${err.message}`);
-  rmSync(workDir, { recursive: true, force: true });
-  process.exit(1);
-}
-
-const validation = validateVerdict(verdict);
-if (!validation.ok) {
-  console.error("[swarm-review] verdict validation failed:");
-  for (const e of validation.errors) console.error("  -", e);
-  rmSync(workDir, { recursive: true, force: true });
-  process.exit(1);
-}
-
-// ---------------------------------------------------------------------------
-// Deduplicate findings
-// ---------------------------------------------------------------------------
-
-const swarmStateDir = join(cloneDir, ".ai", "swarm");
-const prevStateFile = join(swarmStateDir, "prev-keys.json");
-let prevKeys = [];
-if (existsSync(prevStateFile)) {
-  try {
-    prevKeys = JSON.parse(readFileSync(prevStateFile, "utf8"));
-  } catch {
-    prevKeys = [];
-  }
-}
-
-const currentFindings = verdict.findings ?? [];
-const { fresh, resolvedKeys, currentKeys } = diffFindings(prevKeys, currentFindings);
-
-// ---------------------------------------------------------------------------
-// Assemble run record for report formatters
-// ---------------------------------------------------------------------------
-
-const sha = execSync("git -C " + cloneDir + " rev-parse --short HEAD", { encoding: "utf8" }).trim();
-const date = new Date().toISOString().slice(0, 10);
 const severityCounts = { critical: 0, high: 0, medium: 0, low: 0 };
-for (const f of currentFindings) {
-  const sev = (f.severity ?? "low").toLowerCase();
-  if (sev in severityCounts) severityCounts[sev]++;
+for (const f of findings) {
+  if (severityCounts[f.severity] !== undefined) severityCounts[f.severity] += 1;
 }
-
 const run = {
-  date,
+  date: today(),
   sha,
-  target,
-  decision_state: verdict.decision_state,
-  result: verdict.result,
-  safe_to_commit: verdict.safe_to_commit,
-  reason: verdict.reason ?? "",
+  target: targetRepo.replace("https://github.com/", ""),
+  decision_state: parsed.decision_state,
+  result: parsed.result,
+  safe_to_commit: parsed.safe_to_commit,
+  reason: parsed.reason,
   severityCounts,
-  freshCount: fresh.length,
-  fresh,
+  freshCount: diff.fresh.length,
+  fresh: diff.fresh,
 };
 
-// ---------------------------------------------------------------------------
-// Write back
-// ---------------------------------------------------------------------------
+// Private sink: open a tracking issue with full detail.
+execFileSync("gh", [
+  "issue", "create",
+  "--repo", sinkRepo,
+  "--title", formatIssueTitle(run),
+  "--body", formatIssueBody(run),
+  "--label", "swarm-review",
+], { stdio: ["pipe", "inherit", "inherit"] });
 
-mkdirSync(swarmStateDir, { recursive: true });
-
-// Update the previous-keys store.
-writeFileSync(prevStateFile, JSON.stringify(currentKeys, null, 2) + "\n");
-
-// Write the cadence marker (sanitized, safe-to-publish).
-const markerFile = join(swarmStateDir, "last-review.txt");
-writeFileSync(markerFile, formatCadenceMarker(run) + "\n");
-
-// Write the full issue body to a private log (not committed by this script).
-const logFile = join(workDir, "issue-body.md");
-writeFileSync(logFile, formatIssueTitle(run) + "\n\n" + formatIssueBody(run) + "\n");
-
-// ---------------------------------------------------------------------------
-// Summary
-// ---------------------------------------------------------------------------
-
-console.log(`[swarm-review] verdict: ${verdict.decision_state} (safe_to_commit=${verdict.safe_to_commit})`);
-console.log(`[swarm-review] findings: ${currentFindings.length} total, ${fresh.length} fresh, ${resolvedKeys.length} resolved`);
-console.log(`[swarm-review] cadence marker: ${formatCadenceMarker(run)}`);
-console.log(`[swarm-review] issue body written to: ${logFile}`);
-
-rmSync(workDir, { recursive: true, force: true });
-process.exit(verdict.safe_to_commit ? 0 : 1);
+// Public marker: append the sanitized one-liner to the target's trust record in
+// the checkout, then push it back on main (the runner environment must have push
+// rights to the target). Skipped here if the marker file is absent.
+const markerFile = join(checkout, markerPath);
+if (existsSync(markerFile)) {
+  appendFileSync(markerFile, "\n> " + formatCadenceMarker(run) + "\n");
+  // Pushing the marker back is gated; the cron environment performs the gated
+  // commit. See Task 5 for the commit-with-companion command.
+}
+console.log("swarm review complete: " + formatCadenceMarker(run));
