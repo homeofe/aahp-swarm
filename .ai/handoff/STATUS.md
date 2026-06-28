@@ -2,6 +2,10 @@
 
 > Last updated: 2026-06-28 by claude-opus-4-8
 >
+> Note (2026-06-28): synced pre-existing handoff edits (NEXT_ACTIONS issue links
+> for T-001..T-007) and added `.ai/logs/` to .gitignore. Workspace prep ahead of
+> adding the reference runner under runner/.
+>
 **Rule:** This file is rewritten at the end of every active session.
 
 ## Summary

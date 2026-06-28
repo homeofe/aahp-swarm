@@ -4,13 +4,13 @@
 
 ## Ready
 
-### T-001: Implement Swarm Controller runtime
+### T-001: Implement Swarm Controller runtime (issue #2)
 
 - Define orchestration loop for review/dev workflows.
 - Emit structured run outputs to `.ai/swarm/latest-run.json`.
 - Add retry and abort behavior.
 
-### T-002: Add schemas and validation CI
+### T-002: Add schemas and validation CI (issue #3)
 
 - Validate all role outputs against `schemas/*`.
 - Add JSON schema checks in CI.

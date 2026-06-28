@@ -3,22 +3,22 @@
   "project": "aahp-swarm",
   "last_session": {
     "agent": "claude-opus-4-8",
-    "session_id": "cli-1782635719",
-    "timestamp": "2026-06-28T08:35:20Z",
-    "commit": "0c10750",
+    "session_id": "cli-1782645139",
+    "timestamp": "2026-06-28T11:12:20Z",
+    "commit": "2d8f546",
     "phase": "implementation",
     "duration_minutes": 0
   },
   "files": {
     "STATUS.md": {
-      "checksum": "sha256:313090a5f6aacb33be50c0040f41fb490c75c774d312a7486cf7289f880e877a",
-      "updated": "2026-06-28T08:34:51Z",
-      "lines": 89,
-      "summary": "**Rule:** This file is rewritten at the end of every active session."
+      "checksum": "sha256:93c0e2ece1bf1582e8cb4afdedd055f40b90018437fa4be2966f88c9f3930885",
+      "updated": "2026-06-28T11:12:08Z",
+      "lines": 93,
+      "summary": "(no summary available)"
     },
     "NEXT_ACTIONS.md": {
-      "checksum": "sha256:a04c8a8912d66f3ee2814d0c873052fa7aaecb6a00f47edfccb440cd1ae290e8",
-      "updated": "2026-06-26T12:16:50Z",
+      "checksum": "sha256:813429d456b66576116aa79f922cca3f0521764250b68457a84e588438364e9a",
+      "updated": "2026-06-28T10:10:37Z",
       "lines": 20,
       "summary": "(no summary available)"
     },
@@ -71,12 +71,12 @@
       "summary": "{"
     }
   },
-  "quick_context": "Added the Typed Verdict Layer (TVL): typed verdict decision_state + ambiguity object, verdict/risk role extensions, controller + telemetry roles, design spec.",
+  "quick_context": "(no summary available) (no summary available) ",
   "token_budget": {
     "manifest_only": 85,
-    "manifest_plus_core": 839,
-    "full_read": 1232
+    "manifest_plus_core": 883,
+    "full_read": 1276
   }
   ,"next_task_id": 3
-  ,"tasks": {"T-001":{"title":"Implement Swarm Controller runtime","status":"ready","priority":"high"},"T-002":{"title":"Add schemas and validation CI","status":"ready","priority":"high"}}
+  ,"tasks": {"T-001":{"title":"Implement Swarm Controller runtime","status":"ready","priority":"high","github_issue":2,"github_repo":"homeofe/aahp-swarm"},"T-002":{"title":"Add schemas and validation CI","status":"ready","priority":"high","github_issue":3,"github_repo":"homeofe/aahp-swarm"}}
 }
