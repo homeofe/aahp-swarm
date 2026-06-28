@@ -59,13 +59,17 @@ if (dryRun) {
   process.exit(0);
 }
 
-// The server-authenticated claude CLI runs the prompt in headless print mode and
-// returns the model text on stdout. No API key is passed here; auth is the
-// chef-linux environment's existing claude session.
-const raw = execFileSync("claude", ["-p", prompt, "--output-format", "text"], {
-  encoding: "utf8",
-  maxBuffer: 32 * 1024 * 1024,
-});
+// The authenticated claude CLI runs the prompt in headless print mode with its
+// working directory set to the checkout, so it can read the target's source with
+// read-only tools (Read, Grep, Glob). The prompt is passed on stdin to avoid the
+// command-line length limit. No API key is passed here; auth is the environment's
+// existing claude session. On Windows the npm launcher is claude.cmd, which Node
+// cannot exec directly, so it is routed through cmd.exe with fixed, safe args.
+const agentFlags = ["-p", "--output-format", "text", "--allowedTools", "Read", "Grep", "Glob"];
+const agentOpts = { cwd: checkout, input: prompt, encoding: "utf8", maxBuffer: 32 * 1024 * 1024 };
+const raw = process.platform === "win32"
+  ? execFileSync("cmd.exe", ["/d", "/s", "/c", "claude", ...agentFlags], agentOpts)
+  : execFileSync("claude", agentFlags, agentOpts);
 
 const match = raw.match(/\{[\s\S]*\}/);
 if (!match) {

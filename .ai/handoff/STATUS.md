@@ -1,6 +1,13 @@
 # AAHP-SWARM: Current State of the Nation
 
-> Last updated: 2026-06-28 by claude-sonnet-4-6
+> Last updated: 2026-06-28 by claude-opus-4-8
+>
+> Note (2026-06-28): runner tuning validated by a real run against
+> supply-chain-guard (issue filed to elvatis/ideabase#23, verdict ESCALATE_REVIEW
+> with 5 grounded findings). The agent now runs with cwd set to the checkout and
+> read-only tools (Read, Grep, Glob) so it reads the target's actual source; the
+> prompt is passed on stdin to avoid the command-line length limit; the agent exec
+> is cross-platform (cmd.exe wrapper on Windows for the claude.cmd launcher).
 >
 > Note (2026-06-28): runner: replaced swarm-review.mjs with the prescribed execFileSync (shell-free) orchestration and aligned assemblePrompt to {roles, profile, repoTree}. The prior inferred version used execSync with shell-interpolated target argument (command injection). All 15 tests pass; dry-run verified.
 >

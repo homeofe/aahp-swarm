@@ -5,6 +5,8 @@ export function assemblePrompt({ roles, profile, repoTree }) {
   return [
     "You are an aahp-swarm reviewer. Play the Scout, Tester, Risk, and Verdict",
     "roles in sequence against the target repository described below.",
+    "Your working directory is a checkout of that repository: read the actual",
+    "source files (the tree is listed below) with your file tools before judging.",
     "",
     "## Role contracts",
     roles,
