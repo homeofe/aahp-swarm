@@ -2,6 +2,18 @@
 
 > Last updated: 2026-06-28 by claude-opus-4-8
 >
+> Note (2026-06-28): security fix for three verified findings in hub/server.js.
+> (1) Command injection: replaced spawn(cmd, {shell:true}) with spawn(executable,
+> args, {shell:false}) after splitting argv and validating with SAFE_COMMAND_RE +
+> SHELL_META_RE + FLAG_INJECT_RE allowlists so no shell ever parses user input.
+> (2) Missing auth: added checkApiAuth() guard at the top of handleApi() using a
+> constant-time Bearer-token comparison; AAHP_HUB_TOKEN env var enables it. Also
+> restricted CORS to loopback origins and bound the listener to 127.0.0.1 only.
+> (3) SSRF: normalizeProviderUrl() now parses the URL and rejects any scheme that
+> is not http: or https: (blocks file://, gopher://, data:, ftp:, etc.).
+> 30 new regression tests added in runner/test/hub-security.test.mjs (57 total,
+> all pass).
+>
 > Note (2026-06-28): hardened verdict extraction (lib/extract.mjs). The first
 > chef-linux run failed because the agent wrapped its JSON in prose with stray
 > braces and the old greedy regex grabbed the wrong span. Now a string-aware

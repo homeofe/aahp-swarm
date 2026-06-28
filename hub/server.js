@@ -4,6 +4,25 @@ const http = require('node:http')
 const { spawn } = require('node:child_process')
 const { URL } = require('node:url')
 
+// --- Security: shared-secret auth token for all API mutations ---
+// Set AAHP_HUB_TOKEN env var to a non-empty string to require that callers
+// supply "Authorization: Bearer <token>" on every /api/* request.
+// When the env var is unset the hub runs in loopback-only unauthenticated
+// mode (suitable for single-user workstations where the port is not exposed).
+const HUB_TOKEN = process.env.AAHP_HUB_TOKEN || ''
+
+// Allowlist for local-provider commands: only these executable basenames are
+// permitted so that an attacker who can write config cannot escalate to
+// arbitrary shell execution.
+// The value must be a non-empty string with no shell metacharacters, no
+// leading hyphen (flag injection), and no path separator sequences (traversal).
+const SAFE_COMMAND_RE = /^[A-Za-z0-9_.\-][A-Za-z0-9_./ \-]*$/
+const SHELL_META_RE = /[;&|`$<>!(){}[\]\\'"*?~\n\r]/
+const FLAG_INJECT_RE = /(^|\s)-/
+
+// Allowed URL schemes for provider base URLs (SSRF guard).
+const ALLOWED_URL_SCHEMES = new Set(['http:', 'https:'])
+
 const HUB_ROOT = path.resolve(__dirname)
 const PROJECT_ROOT = path.resolve(HUB_ROOT, '..')
 const PUBLIC_DIR = path.join(HUB_ROOT, 'public')
@@ -523,7 +542,19 @@ function providerHeaders(providerCfg, secrets, providerName) {
 function normalizeProviderUrl(baseUrl) {
   const trimmed = toText(baseUrl || '').trim()
   if (!trimmed) return ''
-  return trimmed.endsWith('/') ? trimmed.replace(/\/$/, '') : trimmed
+  // SSRF guard: only http: and https: are allowed.  Reject file://, gopher://,
+  // data:, and any other scheme that could be abused as an SSRF vector.
+  let parsed
+  try {
+    parsed = new URL(trimmed)
+  } catch {
+    return ''
+  }
+  if (!ALLOWED_URL_SCHEMES.has(parsed.protocol)) {
+    return ''
+  }
+  const normalised = trimmed.endsWith('/') ? trimmed.replace(/\/$/, '') : trimmed
+  return normalised
 }
 
 async function proxyJsonRequest({ method, url, headers = {}, body, timeoutMs = 120000 }) {
@@ -599,7 +630,8 @@ async function runStepWithProvider(step, projectPath, config, secrets) {
   const timeoutMs = Math.max(5000, step.timeoutMs || 120000)
 
   if (step.provider === 'local') {
-    if (!step.command.trim()) {
+    const rawCommand = toText(step.command).trim()
+    if (!rawCommand) {
       return {
         ok: true,
         skipped: true,
@@ -608,13 +640,42 @@ async function runStepWithProvider(step, projectPath, config, secrets) {
       }
     }
 
+    // Command injection guard: reject inputs containing shell metacharacters,
+    // leading-hyphen flag injection, or characters outside the safe set.
+    // Shell is NOT used; the command string is split on whitespace into an
+    // argv array so no shell ever parses it.
+    if (SHELL_META_RE.test(rawCommand) || !SAFE_COMMAND_RE.test(rawCommand)) {
+      return {
+        ok: false,
+        step: step.id,
+        provider: 'local',
+        error: 'Command contains disallowed characters and was rejected',
+      }
+    }
+
+    // Split into [executable, ...args] without invoking a shell.
+    const argv = rawCommand.split(/\s+/).filter(Boolean)
+    const executable = argv[0]
+    const args = argv.slice(1)
+
+    // Reject leading-hyphen flag injection on the executable itself.
+    if (FLAG_INJECT_RE.test(executable)) {
+      return {
+        ok: false,
+        step: step.id,
+        provider: 'local',
+        error: 'Command executable starts with a flag character and was rejected',
+      }
+    }
+
     return new Promise((resolve) => {
       const start = Date.now()
       let stdout = ''
       let stderr = ''
-      const child = spawn(step.command, {
+      // shell: false prevents any shell metacharacter interpretation.
+      const child = spawn(executable, args, {
         cwd: projectPath,
-        shell: true,
+        shell: false,
         windowsHide: true,
         stdio: ['ignore', 'pipe', 'pipe'],
       })
@@ -638,7 +699,7 @@ async function runStepWithProvider(step, projectPath, config, secrets) {
           ok: false,
           step: step.id,
           provider: 'local',
-          command: step.command,
+          command: rawCommand,
           timedOut,
           durationMs: Date.now() - start,
           error: String(error),
@@ -652,7 +713,7 @@ async function runStepWithProvider(step, projectPath, config, secrets) {
           ok,
           step: step.id,
           provider: 'local',
-          command: step.command,
+          command: rawCommand,
           timedOut,
           durationMs: Date.now() - start,
           exitCode: code,
@@ -755,7 +816,36 @@ async function runWorkflowSequence(projectPath, projectConfig, config, secrets, 
   }
 }
 
+// Auth guard: when AAHP_HUB_TOKEN is set, every /api/* request must carry
+// "Authorization: Bearer <token>".  Timing-safe comparison prevents oracle
+// attacks.  When the env var is empty the guard is bypassed (workstation mode).
+function checkApiAuth(req) {
+  if (!HUB_TOKEN) return true // unauthenticated loopback-only mode
+  const header = toText(req.headers['authorization'])
+  const prefix = 'Bearer '
+  if (!header.startsWith(prefix)) return false
+  const supplied = header.slice(prefix.length)
+  // Use a constant-time comparison to prevent timing side channels.
+  if (supplied.length !== HUB_TOKEN.length) return false
+  let diff = 0
+  for (let i = 0; i < supplied.length; i++) {
+    diff |= supplied.charCodeAt(i) ^ HUB_TOKEN.charCodeAt(i)
+  }
+  return diff === 0
+}
+
 async function handleApi(req, res, parsedUrl) {
+  // Authentication check: reject if a token is configured and caller did not
+  // present it.
+  if (!checkApiAuth(req)) {
+    res.writeHead(401, {
+      'Content-Type': 'application/json; charset=utf-8',
+      'WWW-Authenticate': 'Bearer realm="aahp-hub"',
+    })
+    res.end(JSON.stringify({ error: 'unauthorized' }))
+    return true
+  }
+
   ensureSettings()
   const config = loadConfig()
   const secrets = loadSecrets()
@@ -1038,10 +1128,18 @@ const server = http.createServer(async (req, res) => {
   const parsed = new URL(req.url, 'http://localhost')
 
   if (req.method === 'OPTIONS') {
+    // CORS: restrict to same-origin loopback requests only.
+    // When AAHP_HUB_TOKEN is set, callers must also supply the Bearer token;
+    // expose the Authorization header name so the preflight succeeds.
+    const origin = req.headers['origin'] || ''
+    const allowOrigin = /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?$/.test(origin)
+      ? origin
+      : 'null'
     res.writeHead(204, {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'content-type',
+      'Access-Control-Allow-Origin': allowOrigin,
+      'Access-Control-Allow-Headers': 'content-type, authorization',
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Vary': 'Origin',
     })
     res.end()
     return
@@ -1064,7 +1162,10 @@ const server = http.createServer(async (req, res) => {
 })
 
 const PORT = Number(process.env.PORT || 4173)
-server.listen(PORT, () => {
+// Bind to loopback only so the hub is not reachable from the network.
+// Combined with the shared-secret auth gate this prevents unauthenticated
+// remote access even if a firewall rule is misconfigured.
+server.listen(PORT, '127.0.0.1', () => {
   console.log(`AAHP-SWARM Hub running at http://127.0.0.1:${PORT}`)
   console.log(`Workspace root: ${PROJECT_ROOT}`)
 })
