@@ -145,3 +145,5 @@ a silent pass or block.
 | Typed Verdict Layer | docs/typed-verdict-layer.md, roles/ | Design v0.1 |
 | Runtime | runtime/* | Skeleton present |
 | Pitch deck | work/elvatis-pitch-refresh-handoff | EN + DE final |
+
+> 2026-06-30 ci: add Dependabot config (per-repo ecosystems) + exempt Dependabot from the aahp-verify handoff gate.
