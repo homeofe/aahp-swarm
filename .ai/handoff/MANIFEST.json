@@ -3,70 +3,70 @@
   "project": "aahp-swarm",
   "last_session": {
     "agent": "claude-opus-4-8",
-    "session_id": "cli-1782820664",
-    "timestamp": "2026-06-30T11:57:46Z",
-    "commit": "e302d4a",
-    "phase": "fix",
+    "session_id": "cli-1784010002",
+    "timestamp": "2026-07-14T06:20:02Z",
+    "commit": "279d167",
+    "phase": "implementation",
     "duration_minutes": 0
   },
   "files": {
     "STATUS.md": {
-      "checksum": "sha256:49d3cec61e6534239b87e9e2f45f6080b982f8372054099edbbdb0bdaffeb6c8",
-      "updated": "2026-06-30T11:57:43Z",
-      "lines": 149,
+      "checksum": "sha256:4ba5c839e6ffc655475df889de883e4a6ce13d677bb8c5e2bce1084bf99c10e0",
+      "updated": "2026-07-14T06:20:02Z",
+      "lines": 151,
       "summary": "(no summary available)"
     },
     "NEXT_ACTIONS.md": {
       "checksum": "sha256:813429d456b66576116aa79f922cca3f0521764250b68457a84e588438364e9a",
-      "updated": "2026-06-28T10:10:37Z",
+      "updated": "2026-07-14T06:20:01Z",
       "lines": 20,
       "summary": "(no summary available)"
     },
     "LOG.md": {
       "checksum": "sha256:28474b784c6e387cb3b6c87eb5a230b6c052992ec5cb1270d9f3d091e187de55",
-      "updated": "2026-06-26T12:16:51Z",
+      "updated": "2026-07-14T06:20:01Z",
       "lines": 16,
       "summary": "(no summary available)"
     },
     "LOG-ARCHIVE.md": {
       "checksum": "sha256:01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
-      "updated": "2026-06-26T12:17:17Z",
+      "updated": "2026-07-14T06:20:01Z",
       "lines": 1,
       "summary": "(no summary available)"
     },
     "LOG-ARCHIVE.index.json": {
       "checksum": "sha256:9bc0f5427594815f5968a4d15826972e195b926c482fc24cc13c8387985e5d5f",
-      "updated": "2026-06-26T12:17:17Z",
+      "updated": "2026-07-14T06:20:01Z",
       "lines": 4,
       "summary": "{"
     },
     "DASHBOARD.md": {
       "checksum": "sha256:a04cf11d15490bb8ddc58022548203d8848bebbfc31682bd762e53855752d2fa",
-      "updated": "2026-06-26T12:16:58Z",
+      "updated": "2026-07-14T06:20:01Z",
       "lines": 5,
       "summary": "| Section | Open | Status |"
     },
     "TRUST.md": {
       "checksum": "sha256:ed629c20c7498da0562e19c6d498a4dcc7524b5f30e09800d858cbcdbf1ec822",
-      "updated": "2026-06-26T12:16:56Z",
+      "updated": "2026-07-14T06:20:01Z",
       "lines": 6,
       "summary": "| Claim | Status | Verified | TTL | Expires |"
     },
     "CONVENTIONS.md": {
       "checksum": "sha256:1acc9f4b342433f6069fc773f6cb1bd052d8a29fc3e9d86fbece018e167ae186",
-      "updated": "2026-06-26T12:20:32Z",
+      "updated": "2026-07-14T06:20:01Z",
       "lines": 13,
       "summary": "- Use English and ASCII in code and docs."
     },
     "WORKFLOW.md": {
       "checksum": "sha256:2fe28df8db70e37e4e1dc001d1b79c1305c481ed0e0143acfce0392faee1f346",
-      "updated": "2026-06-26T12:17:01Z",
+      "updated": "2026-07-14T06:20:01Z",
       "lines": 5,
       "summary": "- Review mode: scout -> reviewer -> tester -> risk -> verdict -> handoff-manager."
     },
     "pii-allowlist.json": {
       "checksum": "sha256:7c1051f6e2bc3943b7c1dbe4da229694455681b8875a346c99279e555edb733f",
-      "updated": "2026-06-28T04:14:54Z",
+      "updated": "2026-07-14T06:20:01Z",
       "lines": 4,
       "summary": "{"
     }
@@ -74,8 +74,8 @@
   "quick_context": "(no summary available) (no summary available) ",
   "token_budget": {
     "manifest_only": 85,
-    "manifest_plus_core": 1617,
-    "full_read": 2010
+    "manifest_plus_core": 1673,
+    "full_read": 2066
   }
   ,"next_task_id": 3
   ,"tasks": {"T-001":{"title":"Implement Swarm Controller runtime","status":"ready","priority":"high","github_issue":2,"github_repo":"homeofe/aahp-swarm"},"T-002":{"title":"Add schemas and validation CI","status":"ready","priority":"high","github_issue":3,"github_repo":"homeofe/aahp-swarm"}}
