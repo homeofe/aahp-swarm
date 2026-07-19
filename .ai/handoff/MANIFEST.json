@@ -2,71 +2,77 @@
   "aahp_version": "3.0",
   "project": "aahp-swarm",
   "last_session": {
-    "agent": "claude-opus-4-8",
-    "session_id": "cli-1784032533",
-    "timestamp": "2026-07-14T12:35:36Z",
-    "commit": "2abc4a5",
-    "phase": "fix",
+    "agent": "cli-tool",
+    "session_id": "cli-1784444072",
+    "timestamp": "2026-07-19T06:54:32Z",
+    "commit": "95f498b",
+    "phase": "idle",
     "duration_minutes": 0
   },
   "files": {
     "STATUS.md": {
-      "checksum": "sha256:b707fedea957f06bd03bf344aa1fc923160380e8c5e01815531bd4d9f82c7527",
-      "updated": "2026-07-14T12:32:11Z",
-      "lines": 153,
+      "checksum": "sha256:2d1e4c6571972c8c61e94c2423441e8085e06fc7297d3abd2cbc52af37cf205d",
+      "updated": "2026-07-19T06:54:22Z",
+      "lines": 157,
       "summary": "(no summary available)"
     },
     "NEXT_ACTIONS.md": {
       "checksum": "sha256:813429d456b66576116aa79f922cca3f0521764250b68457a84e588438364e9a",
-      "updated": "2026-07-14T12:29:53Z",
+      "updated": "2026-07-19T06:51:45Z",
       "lines": 20,
       "summary": "(no summary available)"
     },
     "LOG.md": {
       "checksum": "sha256:28474b784c6e387cb3b6c87eb5a230b6c052992ec5cb1270d9f3d091e187de55",
-      "updated": "2026-07-14T12:29:53Z",
+      "updated": "2026-07-19T06:51:45Z",
       "lines": 16,
       "summary": "(no summary available)"
     },
     "LOG-ARCHIVE.md": {
       "checksum": "sha256:01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
-      "updated": "2026-07-14T12:29:53Z",
+      "updated": "2026-07-19T06:51:45Z",
       "lines": 1,
       "summary": "(no summary available)"
     },
     "LOG-ARCHIVE.index.json": {
       "checksum": "sha256:9bc0f5427594815f5968a4d15826972e195b926c482fc24cc13c8387985e5d5f",
-      "updated": "2026-07-14T12:29:53Z",
+      "updated": "2026-07-19T06:51:45Z",
       "lines": 4,
       "summary": "{"
     },
     "DASHBOARD.md": {
       "checksum": "sha256:a04cf11d15490bb8ddc58022548203d8848bebbfc31682bd762e53855752d2fa",
-      "updated": "2026-07-14T12:29:53Z",
+      "updated": "2026-07-19T06:51:45Z",
       "lines": 5,
       "summary": "| Section | Open | Status |"
     },
     "TRUST.md": {
-      "checksum": "sha256:ed629c20c7498da0562e19c6d498a4dcc7524b5f30e09800d858cbcdbf1ec822",
-      "updated": "2026-07-14T12:29:53Z",
-      "lines": 6,
-      "summary": "| Claim | Status | Verified | TTL | Expires |"
+      "checksum": "sha256:116eda9d10c3d359e9f6e6d9b818f10743de417f9e60609e903b24486d884b4f",
+      "updated": "2026-07-19T06:51:45Z",
+      "lines": 21,
+      "summary": "| Claim | Status | Verified | TTL | Expires | Provenance |"
     },
     "CONVENTIONS.md": {
       "checksum": "sha256:1acc9f4b342433f6069fc773f6cb1bd052d8a29fc3e9d86fbece018e167ae186",
-      "updated": "2026-07-14T12:29:53Z",
+      "updated": "2026-07-19T06:51:45Z",
       "lines": 13,
       "summary": "- Use English and ASCII in code and docs."
     },
     "WORKFLOW.md": {
       "checksum": "sha256:2fe28df8db70e37e4e1dc001d1b79c1305c481ed0e0143acfce0392faee1f346",
-      "updated": "2026-07-14T12:29:53Z",
+      "updated": "2026-07-19T06:51:45Z",
       "lines": 5,
       "summary": "- Review mode: scout -> reviewer -> tester -> risk -> verdict -> handoff-manager."
     },
+    "GROUNDING.md": {
+      "checksum": "sha256:7ef8cece585dc5defb4285175b9ba560d5469675df553d4ce28ec9e7aec24343",
+      "updated": "2026-07-19T06:51:45Z",
+      "lines": 209,
+      "summary": "(no summary available)"
+    },
     "pii-allowlist.json": {
       "checksum": "sha256:7c1051f6e2bc3943b7c1dbe4da229694455681b8875a346c99279e555edb733f",
-      "updated": "2026-07-14T12:29:53Z",
+      "updated": "2026-07-19T06:51:45Z",
       "lines": 4,
       "summary": "{"
     }
@@ -74,9 +80,24 @@
   "quick_context": "(no summary available) (no summary available) ",
   "token_budget": {
     "manifest_only": 85,
-    "manifest_plus_core": 1718,
-    "full_read": 2111
+    "manifest_plus_core": 1965,
+    "full_read": 4474
+  },
+  "next_task_id": 3,
+  "tasks": {
+    "T-001": {
+      "title": "Implement Swarm Controller runtime",
+      "status": "ready",
+      "priority": "high",
+      "github_issue": 2,
+      "github_repo": "homeofe/aahp-swarm"
+    },
+    "T-002": {
+      "title": "Add schemas and validation CI",
+      "status": "ready",
+      "priority": "high",
+      "github_issue": 3,
+      "github_repo": "homeofe/aahp-swarm"
+    }
   }
-  ,"next_task_id": "3"
-  ,"tasks": {"T-001":{"title":"Implement Swarm Controller runtime","status":"ready","priority":"high","github_issue":2,"github_repo":"homeofe/aahp-swarm"},"T-002":{"title":"Add schemas and validation CI","status":"ready","priority":"high","github_issue":3,"github_repo":"homeofe/aahp-swarm"}}
 }
